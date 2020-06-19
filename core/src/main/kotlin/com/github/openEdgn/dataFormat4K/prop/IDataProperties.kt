@@ -27,7 +27,6 @@ interface IDataProperties : Serializable {
 
     fun replace(key: String, value: Any): Boolean
 
-    @Throws(ClassCastException::class)
     fun <T : Any> getValue(key: String): T?
 
     fun <T : Any> getValueOrDefault(key: String, defaultValue: T): T
@@ -49,6 +48,41 @@ interface IDataProperties : Serializable {
     fun putString(key: String, value: String)
 
     fun <T : Serializable> putObject(key: String, value: T)
+
+
+    fun getByte(key: String): Byte?
+
+    fun getInt(key: String): Int?
+
+    fun getShort(key: String): Short?
+
+    fun getDouble(key: String): Short?
+
+    fun getChar(key: String): Char?
+
+    fun getString(key: String): String?
+
+    fun getBoolean(key: String): Boolean?
+
+    fun <T : Serializable> getObject(key: String): T?
+
+
+    fun getByteOrDefault(key: String,defaultValue:Byte): Byte
+
+    fun getIntOrDefault(key: String,defaultValue:Int): Int
+
+    fun getShortOrDefault(key: String,defaultValue:Short): Short
+
+    fun getDoubleOrDefault(key: String,defaultValue:Double): Double
+
+    fun getCharOrDefault(key: String,defaultValue:Char): Char
+
+    fun getStringOrDefault(key: String,defaultValue:String): String
+
+    fun getBooleanOrDefault(key: String,defaultValue:Boolean): Boolean
+
+    fun <T : Serializable> getObjectOrDefault(key: String,defaultValue:T): T
+
 
 
 }
