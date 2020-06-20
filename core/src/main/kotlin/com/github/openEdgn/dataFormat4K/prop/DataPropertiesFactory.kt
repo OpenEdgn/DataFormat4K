@@ -19,13 +19,12 @@ interface DataPropertiesFactory {
         /**
          * 默认的实现方法
          */
-        val defaultFactory = SimpleDataPropertiesFactory()
+        @Volatile
+        var defaultFactory :DataPropertiesFactory = SimpleDataPropertiesFactory()
 
     }
     class SimpleDataPropertiesFactory:DataPropertiesFactory{
-        override fun createEmptyProperties(): IDataProperties {
-            TODO("Not yet implemented")
-        }
+        override fun createEmptyProperties(): IDataProperties = HashDataProperties()
 
         override fun clone(dataProperties: IDataProperties): IDataProperties {
             TODO("Not yet implemented")

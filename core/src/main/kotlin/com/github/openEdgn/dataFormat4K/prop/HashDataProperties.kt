@@ -1,5 +1,6 @@
 package com.github.openEdgn.dataFormat4K.prop
 
+import com.github.openEdgn.dataFormat4K.prop.format.DataFormatFactory
 import java.io.BufferedReader
 import java.io.Reader
 import java.io.Writer
@@ -17,16 +18,9 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun importData(properties: Reader, cover: Boolean): Long {
         return writeLock.lock {
-            val bufferedReader = BufferedReader(properties)
-            bufferedReader.lines().forEach {
-                val propArr = it.split(Regex("="), 2)
-                if (propArr.size != 2) {
-                    logger.warn("data [$it] format error. ")
-                } else {
-                    set0(propArr[0], propArr[1]);
-                }
+            DataFormatFactory.defaultFactory.format(properties) { k, v ->
+                set0(k, v)
             }
-            1L
         }
     }
 
@@ -52,12 +46,18 @@ class HashDataProperties : BaseDataProperties() {
         }
     }
 
+    /**
+     * 【非线程安全方法】 指定一条数据
+     *
+     * @param key String 键值
+     * @param value Any 数据
+     */
     private fun set0(key: String, value: Any) {
         hashMap[key.trim().toUpperCase()] = value
     }
 
     override fun toString(): String {
-        TODO("Not yet implemented")
+        return hashMap.toString()
     }
 
     override fun hashCode(): Int {
@@ -65,7 +65,11 @@ class HashDataProperties : BaseDataProperties() {
     }
 
     override fun equals(other: Any?): Boolean {
-        TODO("Not yet implemented")
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as HashDataProperties
+        if (hashMap != other.hashMap) return false
+        return true
     }
 
     override fun containsKey(key: String): Boolean {
@@ -100,4 +104,5 @@ class HashDataProperties : BaseDataProperties() {
         }
         return result
     }
+
 }
