@@ -4,7 +4,7 @@ import java.io.Reader
 import java.io.Serializable
 import java.io.Writer
 
-interface IDataProperties : Serializable {
+interface IDataProperties : Serializable{
     /**
      * 从流中导入数据
      * @param properties Reader 字符流
@@ -52,7 +52,6 @@ interface IDataProperties : Serializable {
      * @param value Any 数据
      */
     operator fun set(key: String, value: Any)
-
 
     override fun toString(): String
 

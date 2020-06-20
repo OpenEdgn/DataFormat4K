@@ -3,13 +3,8 @@ package com.github.openEdgn.dataFormat4K.prop
 import java.io.*
 import java.util.*
 
-/**
- * 数据序列化工具
- *
- * 自定义的数据加载、保存
- *
- */
-abstract class BaseProperties : IDataProperties {
+
+abstract class BaseDataProperties : IDataProperties {
 
 
     override fun putByte(key: String, value: Byte) {
