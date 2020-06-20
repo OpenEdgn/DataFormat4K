@@ -61,6 +61,14 @@ interface IDataProperties : Serializable {
     override fun equals(other: Any?): Boolean
 
     /**
+     * 判断是否存在此键值的数据
+     *
+     * @param key String 键值
+     * @return Boolean 是否存在
+     */
+    fun containsKey(key: String):Boolean
+
+    /**
      * 将键值下的数据替换为新的数据
      *
      * 注意，仅为替换，如果键值对不存在那么将返回false

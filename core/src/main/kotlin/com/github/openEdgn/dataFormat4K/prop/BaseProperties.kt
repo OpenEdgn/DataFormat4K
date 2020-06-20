@@ -9,173 +9,106 @@ import java.util.*
  * 自定义的数据加载、保存
  *
  */
-abstract class BaseProperties : Serializable {
-    abstract fun importData(properties: Reader):Long
-    abstract fun exportData(properties: Writer):Long
-    abstract fun remove(key: String): Boolean
-    abstract fun removeAll(): Boolean
-    abstract fun removeAll(key:String): Boolean
-    abstract operator fun <T : Any> get(key: String): T?
-    abstract operator fun set(key: String, value: Any)
-    abstract override fun toString(): String
-    abstract override fun hashCode(): Int
-    abstract override fun equals(other: Any?): Boolean
+abstract class BaseProperties : IDataProperties {
 
 
-
-    abstract fun replace(key: String, value: Any): Boolean
-
-    /**
-     * 通过 key 键 获取相应的数值，不存在则返回 NULL
-     *
-     * 注意，由于类型自动强制转换，如果转换失败则会抛出异常
-     *
-     * @param key String  key键
-     * @return T? 依据返回值得到类型或者 NULL
-     */
-    open fun <T: Any> getValue(key: String): T? = this[key]
-
-    /**
-     * 通过 key 键 获取相应的数值，不存在则返回默认值
-     *
-     * @param key String key键
-     * @param defaultValue T 默认返回类型
-     * @return T  依据返回值得到类型
-     */
-    open fun <T : Any> getValue(key: String, defaultValue: T): T = getValue(key) ?: defaultValue
-
-    /**
-     * 添加 Byte 类型的数据
-     *
-     *  注意，添加此键值对将会覆盖同键值的数据
-     *
-     * @param key 键
-     * @param value Byte 类型的数据
-     */
-    open fun putByte(key: String, value: Byte) {
-        this[key] = value
+    override fun putByte(key: String, value: Byte) {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * 添加 Int 类型的数据
-     *
-     *  注意，添加此键值对将会覆盖同键值的数据
-     *
-     * @param key 键
-     * @param value Int 类型的数据
-     */
-    open fun putInt(key: String, value: Int) {
-        this[key] = value
-
+    override fun putInt(key: String, value: Int) {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * 添加 Long 类型的数据
-     *
-     *  注意，添加此键值对将会覆盖同键值的数据
-     *
-     * @param key 键
-     * @param value Long 类型的数据
-     */
-    open fun putLong(key: String, value: Long) {
-        this[key] = value
-
+    override fun putLong(key: String, value: Long) {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * 添加 Short 类型的数据
-     *
-     *  注意，添加此键值对将会覆盖同键值的数据
-     *
-     * @param key 键
-     * @param value Short 类型的数据
-     */
-    open fun putShort(key: String, value: Short) {
-        this[key] = value
+    override fun putShort(key: String, value: Short) {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * 添加 Double 类型的数据
-     *
-     *  注意，添加此键值对将会覆盖同键值的数据
-     *
-     * @param key 键
-     * @param value Double 类型的数据
-     */
-    open fun putDouble(key: String, value: Double) {
-        this[key] = value
+    override fun putDouble(key: String, value: Double) {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * 添加 Boolean 类型的数据
-     *
-     *  注意，添加此键值对将会覆盖同键值的数据
-     *
-     * @param key 键
-     * @param value Boolean 类型的数据
-     */
-    open fun putBoolean(key: String, value: Boolean) {
-        this[key] = value
+    override fun putBoolean(key: String, value: Boolean) {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * 添加 Char 类型的数据
-     *
-     *  注意，添加此键值对将会覆盖同键值的数据
-     *
-     * @param key 键
-     * @param value Char 类型的数据
-     */
-    open fun putChar(key: String, value: Char) {
-        this[key] = value
+    override fun putChar(key: String, value: Char) {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * 添加 String 类型的数据
-     *
-     *  注意，添加此键值对将会覆盖同键值的数据
-     *
-     * @param key 键
-     * @param value String 类型的数据
-     */
-    open fun putString(key: String, value: String) {
-        this[key] = value
+    override fun putString(key: String, value: String) {
+        TODO("Not yet implemented")
     }
 
-    /**
-     *  得到 Byte 类型的数据
-     *
-     *  可通过设置 `defaultValue` 属性来指定默认返回值 （如果数据不存在的话）
-     *
-     * @param key String
-     * @param defaultValue Byte
-     * @return Byte
-     */
-    open fun getByte(key: String, defaultValue: Byte = 0): Byte {
-        return getValue(key,defaultValue)
+    override fun <T : Serializable> putObject(key: String, value: T) {
+        TODO("Not yet implemented")
     }
 
-    open fun getInt(key: String, defaultValue: Int = 0): Int {
-        return getValue(key,defaultValue)
+    override fun getByte(key: String): Byte? {
+        TODO("Not yet implemented")
     }
 
-    open fun getFloat(key: String, defaultValue: Float = 0f): Float {
-        return getValue(key,defaultValue)
+    override fun getInt(key: String): Int? {
+        TODO("Not yet implemented")
     }
 
-    open fun getDouble(key: String, defaultValue: Double = 0.0): Double {
-        return getValue(key,defaultValue)
+    override fun getShort(key: String): Short? {
+        TODO("Not yet implemented")
     }
 
-    open fun getLong(key: String, defaultValue: Long = 0): Long {
-        return getValue(key,defaultValue)
+    override fun getDouble(key: String): Double? {
+        TODO("Not yet implemented")
     }
 
-    open fun getChar(key: String, defaultValue: Char = 0.toChar()): Char {
-        return getValue(key,defaultValue)
-    }
-    open fun getString(key: String, defaultValue: String = ""): String {
-        return getValue(key,defaultValue)
+    override fun getChar(key: String): Char? {
+        TODO("Not yet implemented")
     }
 
+    override fun getString(key: String): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getBoolean(key: String): Boolean? {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Serializable> getObject(key: String): T? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getByteOrDefault(key: String, defaultValue: Byte): Byte {
+        TODO("Not yet implemented")
+    }
+
+    override fun getIntOrDefault(key: String, defaultValue: Int): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun getShortOrDefault(key: String, defaultValue: Short): Short {
+        TODO("Not yet implemented")
+    }
+
+    override fun getDoubleOrDefault(key: String, defaultValue: Double): Double {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCharOrDefault(key: String, defaultValue: Char): Char {
+        TODO("Not yet implemented")
+    }
+
+    override fun getStringOrDefault(key: String, defaultValue: String): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun getBooleanOrDefault(key: String, defaultValue: Boolean): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Serializable> getObjectOrDefault(key: String, defaultValue: T): T {
+        TODO("Not yet implemented")
+    }
 }
