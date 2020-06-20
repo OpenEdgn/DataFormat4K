@@ -11,6 +11,7 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib"))
     implementation("org.slf4j:slf4j-api:1.7.30")
+    testImplementation("org.slf4j:slf4j-simple:1.7.30")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }
 

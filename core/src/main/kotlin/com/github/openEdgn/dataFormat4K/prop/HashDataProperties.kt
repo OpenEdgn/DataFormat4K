@@ -1,6 +1,5 @@
 package com.github.openEdgn.dataFormat4K.prop
 
-import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.Reader
 import java.io.Writer
@@ -20,7 +19,12 @@ class HashDataProperties : BaseDataProperties() {
         return writeLock.lock {
             val bufferedReader = BufferedReader(properties)
             bufferedReader.lines().forEach {
-
+                val propArr = it.split(Regex("="), 2)
+                if (propArr.size != 2) {
+                    logger.warn("data [$it] format error. ")
+                } else {
+                    set0(propArr[0], propArr[1]);
+                }
             }
             1L
         }
@@ -43,7 +47,13 @@ class HashDataProperties : BaseDataProperties() {
     }
 
     override fun set(key: String, value: Any) {
-        TODO("Not yet implemented")
+        writeLock.lock {
+            set0(key, value)
+        }
+    }
+
+    private fun set0(key: String, value: Any) {
+        hashMap[key.trim().toUpperCase()] = value
     }
 
     override fun toString(): String {
