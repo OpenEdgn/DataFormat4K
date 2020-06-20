@@ -1,11 +1,12 @@
 package com.github.openEdgn.dataFormat4K.prop
 
+import org.slf4j.LoggerFactory
 import java.io.*
 import java.util.*
 
 
 abstract class BaseDataProperties : IDataProperties {
-
+    protected val logger = LoggerFactory.getLogger(javaClass)
 
     override fun putByte(key: String, value: Byte) {
         set(key, value)

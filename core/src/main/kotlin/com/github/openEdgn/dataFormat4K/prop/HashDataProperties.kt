@@ -1,13 +1,29 @@
 package com.github.openEdgn.dataFormat4K.prop
 
+import org.slf4j.LoggerFactory
+import java.io.BufferedReader
 import java.io.Reader
 import java.io.Writer
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
 
 class HashDataProperties : BaseDataProperties() {
-    private val hashMap = HashMap<String,Any>();
+
+    private val hashMap = HashMap<String, Any>();
+    private val readWriteLock = ReentrantReadWriteLock()
+    private val readLock = readWriteLock.readLock()
+    private val writeLock = readWriteLock.writeLock()
+
+
     override fun importData(properties: Reader, cover: Boolean): Long {
-        TODO("Not yet implemented")
+        return writeLock.lock {
+            val bufferedReader = BufferedReader(properties)
+            bufferedReader.lines().forEach {
+
+            }
+            1L
+        }
     }
 
     override fun exportData(writer: Writer): Long {
@@ -58,4 +74,20 @@ class HashDataProperties : BaseDataProperties() {
         TODO("Not yet implemented")
     }
 
+    private inline fun <T : Any> Lock.lock(lock: () -> T): T {
+        lateinit var result: T
+        var throwable: Throwable? = null
+        this.lock()
+        try {
+            result = lock()
+        } catch (e: Throwable) {
+            throwable = e
+        } finally {
+            this.unlock()
+        }
+        if (throwable != null) {
+            throw throwable
+        }
+        return result
+    }
 }
