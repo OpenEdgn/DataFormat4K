@@ -34,8 +34,8 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun remove(key: String): Long {
         return writeLock.lock {
-            if (hashMap.containsKey(key)) {
-                hashMap.remove(key)
+            if (hashMap.containsKey(keyFormat(key))) {
+                hashMap.remove(keyFormat(key))
                 1
             } else {
                 0
@@ -54,7 +54,7 @@ class HashDataProperties : BaseDataProperties() {
     override fun <T : Any> get(key: String): T? {
         try {
             readLock.lock {
-                val any = hashMap[key]
+                val any = hashMap[keyFormat(key)]
                 if (any == null) {
                     throw NullPointerException()
                 } else {
@@ -83,7 +83,11 @@ class HashDataProperties : BaseDataProperties() {
      * @param value Any 数据
      */
     private fun set0(key: String, value: Any) {
-        hashMap[key.trim().toUpperCase()] = value
+        hashMap[keyFormat(key)] = value
+    }
+
+    private fun keyFormat(key: String): String {
+        return key.trim().toUpperCase()
     }
 
     override fun toString(): String {
@@ -104,43 +108,34 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun containsKey(key: String): Boolean {
         return readLock.lock {
-            hashMap.containsKey(key.trim().toUpperCase())
+            hashMap.containsKey(keyFormat(key))
         }
     }
 
     override fun replace(key: String, value: Any): Boolean {
-        return readLock.lock {
-            if (hashMap.containsKey(key).not()) {
+        return writeLock.lock {
+            if (hashMap.containsKey(keyFormat(key)).not()) {
                 false
             } else {
-                hashMap.remove(key)
+                hashMap.remove(keyFormat(key))
                 set0(key, value)
                 true
             }
         }
     }
 
-    override fun <T : Any> getValue(key: String): T? {
-        return get(key)
-    }
-
-    override fun <T : Any> getValueOrDefault(key: String, defaultValue: T): T {
-        return getValue(key) ?: defaultValue
-    }
-
     override fun getString(key: String): String? {
-
         val result = super.getString(key)
         return if (result == null) {
             null
         } else {
-            formatString(result)
+            formatString(key, result)
         }
     }
 
 
     override fun getStringOrDefault(key: String, defaultValue: String): String {
-        return formatString(super.getStringOrDefault(key, defaultValue))
+        return super.getStringOrDefault(key, formatString(key, defaultValue))
     }
 
     private inline fun <T : Any> Lock.lock(lock: () -> T): T {
@@ -163,7 +158,7 @@ class HashDataProperties : BaseDataProperties() {
     private val regex = Regex("%\\{.+?}")
     private val spit = Regex("(^%\\{|}$)")
 
-    private fun formatString(result: String): String {
+    private fun formatString(key: String, result: String): String {
         val compile = Pattern.compile(regex.pattern)
         val matcher = compile.matcher(result)
         val stringBuilder = StringBuilder()
@@ -171,10 +166,15 @@ class HashDataProperties : BaseDataProperties() {
         while (matcher.find()) {
             val data = matcher.group()
             val formatItem = data.split(spit)[1]
-            if (containsKey(formatItem)) {
-                stringBuilder.replace(Regex(formatItem) ,getStringOrDefault(formatItem,data))
-            } else if (System.getProperties().containsKey(formatItem.trim().toUpperCase())) {
-                stringBuilder.replace(Regex(formatItem) ,System.getProperty(formatItem,data))
+            if (keyFormat(key) == keyFormat(formatItem)) {
+                continue
+                // 相同的KEY取消替换
+            }
+            if (containsKey(keyFormat(formatItem))) {
+                stringBuilder.replace(0, stringBuilder.length, stringBuilder.toString().replace(data, getStringOrDefault(keyFormat(formatItem), data))
+                )
+            } else if (System.getProperties().containsKey(formatItem)) {
+                stringBuilder.replace(0, stringBuilder.length, stringBuilder.toString().replace(data, System.getProperty(formatItem, data)))
             }
         }
         return stringBuilder.toString()

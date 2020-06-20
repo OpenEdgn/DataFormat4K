@@ -44,6 +44,14 @@ abstract class BaseDataProperties : IDataProperties {
         set(key, value)
     }
 
+    override fun <T : Any> getValue(key: String): T? {
+        return get(key)
+    }
+
+    override fun <T : Any> getValueOrDefault(key: String, defaultValue: T): T {
+        return getValue(key) ?: defaultValue
+    }
+
     override fun getByte(key: String): Byte? = get(key)
 
     override fun getInt(key: String): Int? = get(key)
