@@ -1,16 +1,16 @@
 package com.github.openEdgn.dataFormat4K.prop
 
 import com.github.openEdgn.dataFormat4K.prop.format.DataFormatFactory
-import java.io.BufferedReader
 import java.io.Reader
 import java.io.Writer
+import java.lang.NullPointerException
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 
 class HashDataProperties : BaseDataProperties() {
 
-    private val hashMap = HashMap<String, Any>();
+    private val hashMap = HashMap<String, Any>()
     private val readWriteLock = ReentrantReadWriteLock()
     private val readLock = readWriteLock.readLock()
     private val writeLock = readWriteLock.writeLock()
@@ -25,19 +25,48 @@ class HashDataProperties : BaseDataProperties() {
     }
 
     override fun exportData(writer: Writer): Long {
-        TODO("Not yet implemented")
+        return readLock.lock {
+            DataFormatFactory.defaultFactory.output(hashMap, writer)
+        }
     }
 
     override fun remove(key: String): Long {
-        TODO("Not yet implemented")
+        return writeLock.lock {
+            if (hashMap.containsKey(key)) {
+                hashMap.remove(key)
+                1
+            } else {
+                0
+            }
+        }
     }
 
     override fun removeAll(): Long {
-        TODO("Not yet implemented")
+        return writeLock.lock {
+            val size = hashMap.size
+            hashMap.clear()
+            size.toLong()
+        }
     }
 
+    @SuppressWarnings("unchecked")
     override fun <T : Any> get(key: String): T? {
-        TODO("Not yet implemented")
+        try {
+            return readLock.lock {
+                val any = hashMap[key]
+                if (any == null) {
+                    throw NullPointerException()
+                } else {
+                    try {
+                        any as T
+                    } catch (e: Throwable) {
+                        throw NullPointerException(e.message)
+                    }
+                }
+            }
+        } catch (_: NullPointerException) {
+            return null
+        }
     }
 
     override fun set(key: String, value: Any) {
@@ -73,19 +102,44 @@ class HashDataProperties : BaseDataProperties() {
     }
 
     override fun containsKey(key: String): Boolean {
-        TODO("Not yet implemented")
+        return readLock.lock {
+            hashMap.containsKey(key)
+        }
     }
 
     override fun replace(key: String, value: Any): Boolean {
-        TODO("Not yet implemented")
+        return readLock.lock {
+            if (hashMap.containsKey(key).not()) {
+                false
+            } else {
+                hashMap.remove(key)
+                set0(key, value)
+                true
+            }
+        }
     }
 
     override fun <T : Any> getValue(key: String): T? {
-        TODO("Not yet implemented")
+        return get(key)
     }
 
     override fun <T : Any> getValueOrDefault(key: String, defaultValue: T): T {
-        TODO("Not yet implemented")
+        return getValue(key) ?: defaultValue
+    }
+
+    override fun getString(key: String): String? {
+
+        val result = super.getString(key)
+        return if (result == null) {
+            null
+        } else {
+            formatString(result)
+        }
+    }
+
+
+    override fun getStringOrDefault(key: String, defaultValue: String): String {
+        return formatString(super.getStringOrDefault(key, defaultValue))
     }
 
     private inline fun <T : Any> Lock.lock(lock: () -> T): T {
@@ -104,5 +158,10 @@ class HashDataProperties : BaseDataProperties() {
         }
         return result
     }
+
+    private fun formatString(result: String): String {
+        TODO()
+    }
+
 
 }

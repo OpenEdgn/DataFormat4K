@@ -17,10 +17,11 @@ interface DataFormatFactory {
     fun format(reader: Reader, container: (String, Any) -> Unit): Long
 
     /**
+     * 将容器下的数据序列化输出到 write 下
      *
-     * @param container Map<String, Any>
-     * @param writer Writer
-     * @return Long
+     * @param container Map<String, Any> 容器
+     * @param writer Writer 接收的接口
+     * @return Long 序列化数据的数目
      */
     fun output(container:Map<String,Any>,writer: Writer):Long
 
