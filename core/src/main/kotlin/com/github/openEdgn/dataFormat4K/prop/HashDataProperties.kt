@@ -4,8 +4,10 @@ import com.github.openEdgn.dataFormat4K.prop.format.DataFormatFactory
 import java.io.Reader
 import java.io.Writer
 import java.lang.NullPointerException
+import java.lang.StringBuilder
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import java.util.regex.Pattern
 
 
 class HashDataProperties : BaseDataProperties() {
@@ -49,16 +51,15 @@ class HashDataProperties : BaseDataProperties() {
         }
     }
 
-    @SuppressWarnings("unchecked")
     override fun <T : Any> get(key: String): T? {
         try {
-            return readLock.lock {
+            readLock.lock {
                 val any = hashMap[key]
                 if (any == null) {
                     throw NullPointerException()
                 } else {
                     try {
-                        any as T
+                        return any as T
                     } catch (e: Throwable) {
                         throw NullPointerException(e.message)
                     }
@@ -103,7 +104,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun containsKey(key: String): Boolean {
         return readLock.lock {
-            hashMap.containsKey(key)
+            hashMap.containsKey(key.trim().toUpperCase())
         }
     }
 
@@ -159,8 +160,24 @@ class HashDataProperties : BaseDataProperties() {
         return result
     }
 
+    private val regex = Regex("%\\{.+?}")
+    private val spit = Regex("(^%\\{|}$)")
+
     private fun formatString(result: String): String {
-        TODO()
+        val compile = Pattern.compile(regex.pattern)
+        val matcher = compile.matcher(result)
+        val stringBuilder = StringBuilder()
+        stringBuilder.append(result)
+        while (matcher.find()) {
+            val data = matcher.group()
+            val formatItem = data.split(spit)[1]
+            if (containsKey(formatItem)) {
+                stringBuilder.replace(Regex(formatItem) ,getStringOrDefault(formatItem,data))
+            } else if (System.getProperties().containsKey(formatItem.trim().toUpperCase())) {
+                stringBuilder.replace(Regex(formatItem) ,System.getProperty(formatItem,data))
+            }
+        }
+        return stringBuilder.toString()
     }
 
 
