@@ -68,13 +68,14 @@ class HashDataPropertiesTest{
     fun getStringOrDefault() {
         val prop = createEmpty()
         prop.putString("key.empty","这是空白的数据，%{user.dir}。")
-        prop.putString("key.empty2","这是空白的数据，%{key.empty}。")
-        println(prop.getString("key.empty"))
-        println(prop.getString("key.empty2"))
+        prop.putString("key.empty2","这是空白的数据，%{key.empty2}。")
+        println(">" + prop.getString("key.empty")+ "<")
+        println(">" + prop.getString("key.empty2") + "<")
     }
 
+
     private fun createEmpty(): HashDataProperties {
-        return HashDataProperties()
+        return HashDataProperties(true)
     }
 
 }

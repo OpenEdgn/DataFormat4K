@@ -1,16 +1,16 @@
 package com.github.openEdgn.dataFormat4K.prop
 
+import com.github.openEdgn.dataFormat4K.prop.dataFill.DataFillFactory
 import com.github.openEdgn.dataFormat4K.prop.format.DataFormatFactory
 import java.io.Reader
 import java.io.Writer
+import java.util.HashMap
 import java.lang.NullPointerException
-import java.lang.StringBuilder
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import java.util.regex.Pattern
 
 
-class HashDataProperties : BaseDataProperties() {
+class HashDataProperties(private val ignoreKeyCase: Boolean = true) : BaseDataProperties() {
 
     private val hashMap = HashMap<String, Any>()
     private val readWriteLock = ReentrantReadWriteLock()
@@ -21,7 +21,9 @@ class HashDataProperties : BaseDataProperties() {
     override fun importData(properties: Reader, cover: Boolean): Long {
         return writeLock.lock {
             DataFormatFactory.defaultFactory.format(properties) { k, v ->
-                set0(k, v)
+                if (!containsKey(k) || cover) {
+                    set0(k, v)
+                }
             }
         }
     }
@@ -52,6 +54,10 @@ class HashDataProperties : BaseDataProperties() {
     }
 
     override fun <T : Any> get(key: String): T? {
+       return get0(key)
+    }
+
+    private fun <T> get0(key: String): T? {
         try {
             readLock.lock {
                 val any = hashMap[keyFormat(key)]
@@ -87,7 +93,11 @@ class HashDataProperties : BaseDataProperties() {
     }
 
     private fun keyFormat(key: String): String {
-        return key.trim().toUpperCase()
+        return if (ignoreKeyCase) {
+            key.trim().toUpperCase()
+        } else {
+            key
+        }
     }
 
     override fun toString(): String {
@@ -125,17 +135,21 @@ class HashDataProperties : BaseDataProperties() {
     }
 
     override fun getString(key: String): String? {
-        val result = super.getString(key)
-        return if (result == null) {
-            null
-        } else {
-            formatString(key, result)
+        readLock.lock {
+            val result = super.getString(key)
+            return if (result == null) {
+                null
+            } else {
+                formatString(result)
+            }
         }
     }
 
 
     override fun getStringOrDefault(key: String, defaultValue: String): String {
-        return super.getStringOrDefault(key, formatString(key, defaultValue))
+        readLock.lock {
+            return formatString(super.getStringOrDefault(key, defaultValue))
+        }
     }
 
     private inline fun <T : Any> Lock.lock(lock: () -> T): T {
@@ -155,30 +169,8 @@ class HashDataProperties : BaseDataProperties() {
         return result
     }
 
-    private val regex = Regex("%\\{.+?}")
-    private val spit = Regex("(^%\\{|}$)")
-
-    private fun formatString(key: String, result: String): String {
-        val compile = Pattern.compile(regex.pattern)
-        val matcher = compile.matcher(result)
-        val stringBuilder = StringBuilder()
-        stringBuilder.append(result)
-        while (matcher.find()) {
-            val data = matcher.group()
-            val formatItem = data.split(spit)[1]
-            if (keyFormat(key) == keyFormat(formatItem)) {
-                continue
-                // 相同的KEY取消替换
-            }
-            if (containsKey(keyFormat(formatItem))) {
-                stringBuilder.replace(0, stringBuilder.length, stringBuilder.toString().replace(data, getStringOrDefault(keyFormat(formatItem), data))
-                )
-            } else if (System.getProperties().containsKey(formatItem)) {
-                stringBuilder.replace(0, stringBuilder.length, stringBuilder.toString().replace(data, System.getProperty(formatItem, data)))
-            }
-        }
-        return stringBuilder.toString()
+    private fun formatString(source: String): String {
+        val result = DataFillFactory.defaultValue.fill(source, hashMap, ignoreKeyCase)
+        return DataFillFactory.defaultValue.fill(result, System.getProperties() as Map<String, Any>, false)
     }
-
-
 }
