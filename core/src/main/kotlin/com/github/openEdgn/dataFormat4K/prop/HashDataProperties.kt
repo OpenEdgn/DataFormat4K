@@ -36,8 +36,9 @@ class HashDataProperties(private val ignoreKeyCase: Boolean = true) : BaseDataPr
 
     override fun remove(key: String): Long {
         return writeLock.lock {
-            if (hashMap.containsKey(keyFormat(key))) {
-                hashMap.remove(keyFormat(key))
+            val k = keyFormat(key)
+            if (hashMap.containsKey(k)) {
+                hashMap.remove(k)
                 1
             } else {
                 0

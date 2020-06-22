@@ -1,11 +1,129 @@
 package com.github.openEdgn.dataFormat4K.prop
 
 import org.junit.jupiter.api.Test
-import org.slf4j.LoggerFactory
 
+import org.junit.jupiter.api.Assertions.*
 
-class HashDataPropertiesTest{
-    private val logger = LoggerFactory.getLogger(javaClass)
+internal class HashDataPropertiesTest {
+    private fun getEmptyHashDataProperties(ignoreCase: Boolean = true): HashDataProperties {
+        return HashDataProperties(ignoreCase)
+    }
+    @Test
+    fun putByte() {
+        val properties = getEmptyHashDataProperties()
+        properties.putByte("test.byte",1)
+        assertEquals(properties.get<Byte>("test.byte"),1)
+    }
+
+    @Test
+    fun putInt() {
+        val properties = getEmptyHashDataProperties()
+        properties.putInt("test.int",2)
+        assertEquals(properties.get<Int>("test.int"),2)
+    }
+
+    @Test
+    fun putLong() {
+        val properties = getEmptyHashDataProperties()
+        properties.putLong("test.long",2L)
+        assertEquals(properties.get<Long>("test.long"),2L)
+    }
+
+    @Test
+    fun putShort() {
+    }
+
+    @Test
+    fun putDouble() {
+    }
+
+    @Test
+    fun putBoolean() {
+    }
+
+    @Test
+    fun putChar() {
+    }
+
+    @Test
+    fun putString() {
+    }
+
+    @Test
+    fun putObject() {
+    }
+
+    @Test
+    fun getValue() {
+    }
+
+    @Test
+    fun getValueOrDefault() {
+    }
+
+    @Test
+    fun getByte() {
+    }
+
+    @Test
+    fun getInt() {
+    }
+
+    @Test
+    fun getShort() {
+    }
+
+    @Test
+    fun getDouble() {
+    }
+
+    @Test
+    fun getChar() {
+    }
+
+    @Test
+    fun getString() {
+    }
+
+    @Test
+    fun getBoolean() {
+    }
+
+    @Test
+    fun getObject() {
+    }
+
+    @Test
+    fun getByteOrDefault() {
+    }
+
+    @Test
+    fun getIntOrDefault() {
+    }
+
+    @Test
+    fun getShortOrDefault() {
+    }
+
+    @Test
+    fun getDoubleOrDefault() {
+    }
+
+    @Test
+    fun getCharOrDefault() {
+    }
+
+    @Test
+    fun getStringOrDefault() {
+    }
+
+    @Test
+    fun getBooleanOrDefault() {
+    }
+
+    @Test
+    fun getObjectOrDefault() {
+    }
 
     @Test
     fun importData() {
@@ -32,18 +150,6 @@ class HashDataPropertiesTest{
     }
 
     @Test
-    fun testToString() {
-    }
-
-    @Test
-    fun testHashCode() {
-    }
-
-    @Test
-    fun testEquals() {
-    }
-
-    @Test
     fun containsKey() {
     }
 
@@ -52,30 +158,10 @@ class HashDataPropertiesTest{
     }
 
     @Test
-    fun getValue() {
+    fun testGetString() {
     }
 
     @Test
-    fun getValueOrDefault() {
-
+    fun testGetStringOrDefault() {
     }
-
-    @Test
-    fun getString() {
-    }
-
-    @Test
-    fun getStringOrDefault() {
-        val prop = createEmpty()
-        prop.putString("key.empty","这是空白的数据，%{user.dir}。")
-        prop.putString("key.empty2","这是空白的数据，%{key.empty2}。")
-        println(">" + prop.getString("key.empty")+ "<")
-        println(">" + prop.getString("key.empty2") + "<")
-    }
-
-
-    private fun createEmpty(): HashDataProperties {
-        return HashDataProperties(true)
-    }
-
 }
