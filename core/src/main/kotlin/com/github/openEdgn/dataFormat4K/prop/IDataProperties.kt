@@ -8,10 +8,10 @@ interface IDataProperties : Serializable{
     /**
      * 从流中导入数据
      * @param properties Reader 字符流
-     * @param cover 如果键冲突是否覆盖
+     * @param coverData 如果键冲突是否覆盖
      * @return Long 导入的数据数目
      */
-    fun importData(properties: Reader, cover: Boolean): Long
+    fun importData(properties: Reader, coverData: Boolean): Long
 
     /**
      * 导出数据到流中
@@ -33,15 +33,7 @@ interface IDataProperties : Serializable{
      */
     fun removeAll(): Long
 
-    /**
-     * 根据键值获取一条数据
-     *
-     * 如果数据不存在则返回 `null`
-     *
-     * @param key String 键值
-     * @return T? 已查到的数据或者NULL
-     */
-    operator fun <T : Any> get(key: String): T?
+
 
     /**
      *   根据键值来设置数据
@@ -50,8 +42,9 @@ interface IDataProperties : Serializable{
      *
      * @param key String 键值
      * @param value Any 数据
+     * @return 如果数据不符合规范（无法添加）则返回 false
      */
-    operator fun set(key: String, value: Any)
+    operator fun set(key: String, value: Any):Boolean
 
     override fun toString(): String
 
@@ -78,26 +71,6 @@ interface IDataProperties : Serializable{
      */
     fun replace(key: String, value: Any): Boolean
 
-    /**
-     * 根据键值获取一条数据
-     *
-     * 如果数据不存在则返回 `null`
-     *
-     * @param key String 键值
-     * @return T? 已查到的数据或者NULL
-     */
-    fun <T : Any> getValue(key: String): T?
-
-    /**
-     * 根据Key 获取一条数据
-     *
-     * 如果数据不存在则返回 defaultValue 下的数据
-     *
-     * @param key String 键值
-     * @param defaultValue 默认数据
-     * @return T 已查到的数据或者默认数据
-     */
-    fun <T : Any> getValueOrDefault(key: String, defaultValue: T): T
 
     /**
      *
@@ -120,7 +93,16 @@ interface IDataProperties : Serializable{
      * @param value Int 类型的数据
      */
     fun putInt(key: String, value: Int)
-
+    /**
+     *
+     * 设置 Float 类型的数据到 key 下
+     *
+     *  默认会覆盖原有的键值相同的数据
+     *
+     * @param key String 键值
+     * @param value Float 类型的数据
+     */
+    fun putFloat(key: String, value: Float)
     /**
      *
      * 设置 Long 类型的数据到 key 下
@@ -217,6 +199,15 @@ interface IDataProperties : Serializable{
      * @return Int 类型的数据或者 NULL
      */
     fun getInt(key: String): Int?
+    /**
+     * 根据键值获取 Float 类型的数据
+     *
+     * 注意，如果键值不存在则返回 NULL
+     *
+     * @param key String 键值
+     * @return Float 类型的数据或者 NULL
+     */
+    fun getFloat(key: String): Float?
 
     /**
      * 根据键值获取 Short 类型的数据
@@ -304,6 +295,18 @@ interface IDataProperties : Serializable{
      * @return Int 通过键值获取到的数值或者 defaultValue 的数值
      */
     fun getIntOrDefault(key: String, defaultValue: Int): Int
+    /**
+     * 根据键值获取 Float 类型的数据
+     *
+     *  通过设置 defaultValue ，可以在类型不匹配或者键值不存在的情况
+     *  下填充 defaultValue 的数值，如果键值存在且类型匹配，那么将返回
+     *  键值下对应的数值。
+     *
+     * @param key String 键值
+     * @param defaultValue Float 默认数值
+     * @return Float 通过键值获取到的数值或者 defaultValue 的数值
+     */
+    fun getFloatOrDefault(key: String, defaultValue: Float): Float
 
     /**
      * 根据键值获取 Short 类型的数据
