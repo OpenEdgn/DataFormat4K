@@ -170,17 +170,6 @@ interface IDataProperties : Serializable{
     fun putString(key: String, value: String)
 
     /**
-     *
-     * 设置继承于Serializable类型的数据到 key 下
-     *
-     *  默认会覆盖原有的键值相同的数据
-     *
-     * @param key String 键值
-     * @param value 继承于Serializable的数据
-     */
-    fun <T : Serializable> putObject(key: String, value: T)
-
-    /**
      * 根据键值获取 Byte 类型的数据
      *
      * 注意，如果键值不存在则返回 NULL
@@ -258,16 +247,6 @@ interface IDataProperties : Serializable{
      * @return Boolean 类型的数据或者 NULL
      */
     fun getBoolean(key: String): Boolean?
-
-    /**
-     * 根据键值获取 继承于Serializable类型的数据
-     *
-     * 注意，如果键值不存在则返回 NULL
-     *
-     * @param key String 键值
-     * @return 继承于Serializable类型的数据或者 NULL
-     */
-    fun <T : Serializable> getObject(key: String): T?
 
 
     /**
@@ -373,18 +352,6 @@ interface IDataProperties : Serializable{
      */
     fun getBooleanOrDefault(key: String, defaultValue: Boolean): Boolean
 
-    /**
-     * 根据键值获取继承于Serializable类型的数据
-     *
-     *  通过设置 defaultValue ，可以在类型不匹配或者键值不存在的情况
-     *  下填充 defaultValue 的数值，如果键值存在且类型匹配，那么将返回
-     *  键值下对应的数值。
-     *
-     * @param key String 键值
-     * @param defaultValue 默认数值
-     * @return 继承于Serializable 通过键值获取到的数值或者 defaultValue 的数值
-     */
-    fun <T : Serializable> getObjectOrDefault(key: String, defaultValue: T): T
 
 
 }

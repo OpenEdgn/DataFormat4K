@@ -1,32 +1,62 @@
 package com.github.openEdgn.dataFormat4K.prop.format
 
-import java.io.Reader
-import java.io.Writer
+import java.lang.StringBuilder
+import java.util.regex.Pattern
+import kotlin.collections.HashSet
 
-
-/**
- * 数据格式化工厂类
- */
 interface DataFormatFactory {
-    /**
-     * 将 Reader 流中的数据格式化成 KEY-VALUE 形式并放在 container 中
-     * @param reader Reader 被取出容器
-     * @param container Function2<String, Any, Unit> 放入的容器 （非线程安全）
-     * @return Long 格式化后的数目
-     */
-    fun format(reader: Reader, container: (String, Any) -> Unit): Long
 
     /**
-     * 将容器下的数据序列化输出到 write 下
+     * 格式化字符串数据
      *
-     * @param container Map<String, Any> 容器
-     * @param writer Writer 接收的接口
-     * @return Long 序列化数据的数目
+     * @param source String 被格式化的数据
+     * @param fillItems Hashtable<String, Any>
+     * @param ignoreCase Boolean
+     * @return String
      */
-    fun output(container:Map<String,Any>,writer: Writer):Long
+    fun fill(source: String, fillItems: Map<String, Any>, ignoreCase: Boolean = false): String
 
-    companion object{
+
+    companion object {
         @Volatile
-        var defaultFactory :DataFormatFactory = TODO()
+        var defaultValue: DataFormatFactory = SimpleDataFormatFactory()
+
+    }
+
+    class SimpleDataFormatFactory : DataFormatFactory {
+        private val regex = Regex("%\\{.+?}")
+        private val spit = Regex("(^%\\{|}$)")
+        private val pattern = Pattern.compile(regex.pattern)
+
+        override fun fill(source: String, fillItems: Map<String, Any>, ignoreCase: Boolean): String {
+            val container = StringBuilder()
+            container.append(source)
+            val keySet = HashSet<String>()
+            fill0(keySet, container, fillItems, ignoreCase)
+            keySet.clear()
+            return container.toString()
+        }
+
+        private fun fill0(keySet: HashSet<String>, container: StringBuilder, fillItems: Map<String, Any>, ignoreCase: Boolean) {
+            val matcher = pattern.matcher(container.toString())
+            while (matcher.find()) {
+                val data = matcher.group()
+                val key = data.split(spit)[1].run {
+                    if (ignoreCase) {
+                        this.toUpperCase()
+                    } else {
+                        this
+                    }
+                }
+                if (keySet.contains(key)) {
+                    continue
+                    //出现相同字段，自动剔除，防止无线循环
+                }
+                if (fillItems.containsKey(key)) {
+                    container.replace(0, container.length, container.toString().replace(data, fillItems[key].toString()))
+                    keySet.add(key)
+                }
+            }
+        }
     }
 }

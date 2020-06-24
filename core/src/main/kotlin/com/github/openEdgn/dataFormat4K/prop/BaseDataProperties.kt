@@ -1,39 +1,12 @@
 package com.github.openEdgn.dataFormat4K.prop
 
 import org.slf4j.LoggerFactory
-import java.io.*
 
 
 abstract class BaseDataProperties : IDataProperties {
     protected val logger = LoggerFactory.getLogger(javaClass)!!
 
-    enum class DataType(val clazz: Class<*>) {
-        BYTE(Byte::class.java),
-        FLOAT(Float::class.java),
-        INTEGER(Int::class.java),
-        LONG(Long::class.java),
-        SHORT(SHORT::class.java),
-        DOUBLE(DOUBLE::class.java),
-        BOOLEAN(Boolean::class.java),
-        CHAR(CHAR::class.java),
-        STRING(String::class.java),
-        SERIALIZABLE(Serializable::class.java),
-        UNKNOWN(Any::class.java);
 
-        companion object {
-
-            fun format(any: Any): DataType {
-                values().forEach {
-                    if (it != UNKNOWN) {
-                        if (any.javaClass.isAssignableFrom(it.clazz)) {
-                            return it
-                        }
-                    }
-                }
-                return UNKNOWN
-            }
-        }
-    }
 
     abstract fun setValue(key: String, value: Any, dataType: DataType): Boolean
     abstract fun <T> getValue(key: String, dataType: DataType): T?
@@ -83,9 +56,6 @@ abstract class BaseDataProperties : IDataProperties {
         setValue(key, value, DataType.STRING)
     }
 
-    override fun <T : Serializable> putObject(key: String, value: T) {
-        setValue(key, value, DataType.SERIALIZABLE)
-    }
 
     override fun getByte(key: String): Byte? {
         return getValue<Byte>(key, DataType.BYTE)
@@ -119,47 +89,41 @@ abstract class BaseDataProperties : IDataProperties {
         return getValue<Boolean>(key, DataType.BOOLEAN)
     }
 
-    override fun <T : Serializable> getObject(key: String): T? {
-        return getValue<T>(key, DataType.SERIALIZABLE)
-    }
 
     override fun getByteOrDefault(key: String, defaultValue: Byte): Byte {
-        return resultValueOrNull(getByte(key),defaultValue)
+        return resultValueOrNull(getByte(key), defaultValue)
     }
 
     override fun getIntOrDefault(key: String, defaultValue: Int): Int {
-        return resultValueOrNull(getInt(key),defaultValue)
+        return resultValueOrNull(getInt(key), defaultValue)
     }
 
     override fun getFloatOrDefault(key: String, defaultValue: Float): Float {
-        return resultValueOrNull(getFloat(key),defaultValue)
+        return resultValueOrNull(getFloat(key), defaultValue)
     }
 
     override fun getShortOrDefault(key: String, defaultValue: Short): Short {
-        return resultValueOrNull(getShort(key),defaultValue)
+        return resultValueOrNull(getShort(key), defaultValue)
     }
 
     override fun getDoubleOrDefault(key: String, defaultValue: Double): Double {
-        return resultValueOrNull(getDouble(key),defaultValue)
+        return resultValueOrNull(getDouble(key), defaultValue)
     }
 
     override fun getCharOrDefault(key: String, defaultValue: Char): Char {
-        TODO("Not yet implemented")
+        return resultValueOrNull(getChar(key), defaultValue)
     }
 
     override fun getStringOrDefault(key: String, defaultValue: String): String {
-        TODO("Not yet implemented")
+        return resultValueOrNull(getString(key), defaultValue)
     }
 
     override fun getBooleanOrDefault(key: String, defaultValue: Boolean): Boolean {
-        TODO("Not yet implemented")
+        return resultValueOrNull(getBoolean(key), defaultValue)
     }
 
-    override fun <T : Serializable> getObjectOrDefault(key: String, defaultValue: T): T {
-        TODO("Not yet implemented")
-    }
 
-    private fun <T> resultValueOrNull(value: T?,defaultValue: T): T {
+    private fun <T> resultValueOrNull(value: T?, defaultValue: T): T {
         return value ?: defaultValue
     }
 }

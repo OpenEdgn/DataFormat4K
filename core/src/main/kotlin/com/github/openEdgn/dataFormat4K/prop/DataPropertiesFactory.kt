@@ -24,7 +24,7 @@ interface DataPropertiesFactory {
 
     }
     class SimpleDataPropertiesFactory:DataPropertiesFactory{
-        override fun createEmptyProperties(): IDataProperties = HashDataProperties()
+        override fun createEmptyProperties(): IDataProperties = BHashDataProperties()
 
         override fun clone(dataProperties: IDataProperties): IDataProperties {
             TODO("Not yet implemented")
