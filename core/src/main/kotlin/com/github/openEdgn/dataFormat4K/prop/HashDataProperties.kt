@@ -78,7 +78,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun importData(properties: Reader, coverData: Boolean): Long {
         return writeLock.lock {
-            DataSerializableFactory.defaultFactory.format(properties) { k, v ->
+            DataSerializableFactory.defaultFactory.input(properties) { k, v ->
                 if (!containsKey(k) || coverData) {
                     set(k, v)
                 }
