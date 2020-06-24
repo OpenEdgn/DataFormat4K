@@ -89,6 +89,10 @@ abstract class BaseDataProperties : IDataProperties {
         return getValue<Boolean>(key, DataType.BOOLEAN)
     }
 
+    override fun getLong(key: String): Long? {
+        return getValue<Long>(key, DataType.LONG)
+
+    }
 
     override fun getByteOrDefault(key: String, defaultValue: Byte): Byte {
         return resultValueOrNull(getByte(key), defaultValue)
@@ -122,7 +126,9 @@ abstract class BaseDataProperties : IDataProperties {
         return resultValueOrNull(getBoolean(key), defaultValue)
     }
 
-
+    override fun getLongOrDefault(key: String, defaultValue: Long): Long {
+        return resultValueOrNull(getLong(key), defaultValue)
+    }
     private fun <T> resultValueOrNull(value: T?, defaultValue: T): T {
         return value ?: defaultValue
     }

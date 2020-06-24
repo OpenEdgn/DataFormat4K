@@ -189,6 +189,15 @@ interface IDataProperties : Serializable{
      */
     fun getInt(key: String): Int?
     /**
+     * 根据键值获取 Long 类型的数据
+     *
+     * 注意，如果键值不存在则返回 NULL
+     *
+     * @param key String 键值
+     * @return Long 类型的数据或者 NULL
+     */
+    fun getLong(key: String): Long?
+    /**
      * 根据键值获取 Float 类型的数据
      *
      * 注意，如果键值不存在则返回 NULL
@@ -312,6 +321,18 @@ interface IDataProperties : Serializable{
      * @return Double 通过键值获取到的数值或者 defaultValue 的数值
      */
     fun getDoubleOrDefault(key: String, defaultValue: Double): Double
+    /**
+     * 根据键值获取 Long 类型的数据
+     *
+     *  通过设置 defaultValue ，可以在类型不匹配或者键值不存在的情况
+     *  下填充 defaultValue 的数值，如果键值存在且类型匹配，那么将返回
+     *  键值下对应的数值。
+     *
+     * @param key String 键值
+     * @param defaultValue Long 默认数值
+     * @return Long 通过键值获取到的数值或者 defaultValue 的数值
+     */
+    fun getLongOrDefault(key: String, defaultValue: Long): Long
 
     /**
      * 根据键值获取 Char 类型的数据

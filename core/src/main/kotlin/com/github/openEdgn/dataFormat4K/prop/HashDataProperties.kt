@@ -1,6 +1,6 @@
 package com.github.openEdgn.dataFormat4K.prop
 
-import com.github.openEdgn.dataFormat4K.prop.BaseDataProperties.DataType.*
+import com.github.openEdgn.dataFormat4K.prop.DataType.*
 import com.github.openEdgn.dataFormat4K.prop.format.DataFormatFactory
 import com.github.openEdgn.dataFormat4K.prop.io.DataSerializableFactory
 import java.io.Reader
@@ -68,8 +68,8 @@ class HashDataProperties : BaseDataProperties() {
                 }
             } else {
                 logger.debug("未找到 key 为{}的数据", key)
+                result = null
             }
-            result = null
 
         }
         return result
@@ -163,9 +163,16 @@ class HashDataProperties : BaseDataProperties() {
             return formatString(super.getStringOrDefault(key, defaultValue))
         }
     }
+    private val systemProp:Map<String,PropData> by lazy {
+        val prop :MutableMap<String,PropData> = mutableMapOf()
+        System.getProperties().forEach { t, u ->
+            prop[t as String] = PropData(u.toString(),STRING)
+        }
+        prop
+    }
     private fun formatString(source: String): String {
         val result = DataFormatFactory.defaultValue.fill(source, hashMap, false)
-        return DataFormatFactory.defaultValue.fill(result, System.getProperties() as Map<String, Any>, false)
+        return DataFormatFactory.defaultValue.fill(result, systemProp, false)
     }
     /**
      * 读写锁方案

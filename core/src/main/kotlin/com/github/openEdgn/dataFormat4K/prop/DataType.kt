@@ -5,10 +5,10 @@ enum class DataType(val clazz: Class<*>) {
     FLOAT(Float::class.java),
     INTEGER(Int::class.java),
     LONG(Long::class.java),
-    SHORT(SHORT::class.java),
-    DOUBLE(DOUBLE::class.java),
+    SHORT(Short::class.java),
+    DOUBLE(Double::class.java),
     BOOLEAN(Boolean::class.java),
-    CHAR(CHAR::class.java),
+    CHAR(Char::class.java),
     STRING(String::class.java),
     UNKNOWN(Any::class.java);
 

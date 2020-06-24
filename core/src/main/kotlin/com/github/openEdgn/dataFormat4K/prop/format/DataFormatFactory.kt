@@ -1,5 +1,6 @@
 package com.github.openEdgn.dataFormat4K.prop.format
 
+import com.github.openEdgn.dataFormat4K.prop.PropData
 import java.lang.StringBuilder
 import java.util.regex.Pattern
 import kotlin.collections.HashSet
@@ -14,7 +15,7 @@ interface DataFormatFactory {
      * @param ignoreCase Boolean
      * @return String
      */
-    fun fill(source: String, fillItems: Map<String, Any>, ignoreCase: Boolean = false): String
+    fun fill(source: String, fillItems: Map<String, PropData>, ignoreCase: Boolean = false): String
 
 
     companion object {
@@ -28,7 +29,7 @@ interface DataFormatFactory {
         private val spit = Regex("(^%\\{|}$)")
         private val pattern = Pattern.compile(regex.pattern)
 
-        override fun fill(source: String, fillItems: Map<String, Any>, ignoreCase: Boolean): String {
+        override fun fill(source: String, fillItems: Map<String, PropData>, ignoreCase: Boolean): String {
             val container = StringBuilder()
             container.append(source)
             val keySet = HashSet<String>()
@@ -37,7 +38,7 @@ interface DataFormatFactory {
             return container.toString()
         }
 
-        private fun fill0(keySet: HashSet<String>, container: StringBuilder, fillItems: Map<String, Any>, ignoreCase: Boolean) {
+        private fun fill0(keySet: HashSet<String>, container: StringBuilder, fillItems: Map<String, PropData>, ignoreCase: Boolean) {
             val matcher = pattern.matcher(container.toString())
             while (matcher.find()) {
                 val data = matcher.group()
@@ -52,10 +53,10 @@ interface DataFormatFactory {
                     continue
                     //出现相同字段，自动剔除，防止无线循环
                 }
-                if (fillItems.containsKey(key)) {
-                    container.replace(0, container.length, container.toString().replace(data, fillItems[key].toString()))
-                    keySet.add(key)
-                }
+                val propData = fillItems[key]
+                if (propData != null)
+                    container.replace(0, container.length, container.toString().replace(data, propData.data))
+                keySet.add(key)
             }
         }
     }
