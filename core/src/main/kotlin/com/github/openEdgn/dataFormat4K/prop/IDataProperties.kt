@@ -81,7 +81,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Byte 类型的数据
      */
-    fun putByte(key: String, value: Byte)
+    fun putByte(key: String, value: Byte):IDataProperties
 
     /**
      *
@@ -92,7 +92,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Int 类型的数据
      */
-    fun putInt(key: String, value: Int)
+    fun putInt(key: String, value: Int):IDataProperties
     /**
      *
      * 设置 Float 类型的数据到 key 下
@@ -102,7 +102,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Float 类型的数据
      */
-    fun putFloat(key: String, value: Float)
+    fun putFloat(key: String, value: Float):IDataProperties
     /**
      *
      * 设置 Long 类型的数据到 key 下
@@ -112,7 +112,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Long 类型的数据
      */
-    fun putLong(key: String, value: Long)
+    fun putLong(key: String, value: Long):IDataProperties
 
     /**
      *
@@ -123,7 +123,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Short 类型的数据
      */
-    fun putShort(key: String, value: Short)
+    fun putShort(key: String, value: Short):IDataProperties
 
     /**
      *
@@ -134,7 +134,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Double 类型的数据
      */
-    fun putDouble(key: String, value: Double)
+    fun putDouble(key: String, value: Double):IDataProperties
 
     /**
      *
@@ -145,7 +145,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Boolean 类型的数据
      */
-    fun putBoolean(key: String, value: Boolean)
+    fun putBoolean(key: String, value: Boolean):IDataProperties
 
     /**
      *
@@ -156,7 +156,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Char 类型的数据
      */
-    fun putChar(key: String, value: Char)
+    fun putChar(key: String, value: Char):IDataProperties
 
     /**
      *
@@ -167,7 +167,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value String 类型的数据
      */
-    fun putString(key: String, value: String)
+    fun putString(key: String, value: String):IDataProperties
 
     /**
      * 根据键值获取 Byte 类型的数据

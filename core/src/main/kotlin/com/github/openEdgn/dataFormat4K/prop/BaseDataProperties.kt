@@ -20,40 +20,49 @@ abstract class BaseDataProperties : IDataProperties {
         return setValue(key, value, type)
     }
 
-    override fun putByte(key: String, value: Byte) {
+    override fun putByte(key: String, value: Byte) :IDataProperties{
         setValue(key, value, DataType.BYTE)
+        return this
     }
 
-    override fun putInt(key: String, value: Int) {
+    override fun putInt(key: String, value: Int) :IDataProperties{
         setValue(key, value, DataType.INTEGER)
+        return this
     }
 
-    override fun putFloat(key: String, value: Float) {
+    override fun putFloat(key: String, value: Float) :IDataProperties{
         setValue(key, value, DataType.FLOAT)
+        return this
     }
 
-    override fun putLong(key: String, value: Long) {
+    override fun putLong(key: String, value: Long) :IDataProperties{
         setValue(key, value, DataType.LONG)
+        return this
     }
 
-    override fun putShort(key: String, value: Short) {
+    override fun putShort(key: String, value: Short):IDataProperties {
         setValue(key, value, DataType.SHORT)
+        return this
     }
 
-    override fun putDouble(key: String, value: Double) {
+    override fun putDouble(key: String, value: Double) :IDataProperties{
         setValue(key, value, DataType.DOUBLE)
+        return this
     }
 
-    override fun putBoolean(key: String, value: Boolean) {
+    override fun putBoolean(key: String, value: Boolean):IDataProperties {
         setValue(key, value, DataType.BOOLEAN)
+        return this
     }
 
-    override fun putChar(key: String, value: Char) {
+    override fun putChar(key: String, value: Char) :IDataProperties{
         setValue(key, value, DataType.CHAR)
+        return this
     }
 
-    override fun putString(key: String, value: String) {
+    override fun putString(key: String, value: String):IDataProperties {
         setValue(key, value, DataType.STRING)
+        return this
     }
 
 

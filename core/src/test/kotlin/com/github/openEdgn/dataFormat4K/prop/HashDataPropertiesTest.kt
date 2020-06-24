@@ -1,10 +1,21 @@
 package com.github.openEdgn.dataFormat4K.prop
 
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 
 internal class HashDataPropertiesTest {
+
+    @BeforeEach
+    fun setUp() {
+    }
+
+    @AfterEach
+    fun tearDown() {
+    }
+
     private fun getEmptyHashDataProperties(ignoreCase: Boolean = true): HashDataProperties {
         return HashDataProperties()
     }
@@ -29,8 +40,19 @@ internal class HashDataPropertiesTest {
         assertEquals(properties.getLong("test.long"),2L)
     }
 
+
+    @Test
+    fun putFloat() {
+        val properties = getEmptyHashDataProperties()
+        properties.putFloat("test.float",3.2f)
+        assertEquals(properties.getFloat("test.float"),3.2f)
+    }
+
     @Test
     fun putShort() {
+        val properties = getEmptyHashDataProperties()
+        properties.putShort("test.short",12)
+        assertEquals(properties.getShort("test.short"),12)
     }
 
     @Test
@@ -47,18 +69,10 @@ internal class HashDataPropertiesTest {
 
     @Test
     fun putString() {
-    }
-
-    @Test
-    fun putObject() {
-    }
-
-    @Test
-    fun getValue() {
-    }
-
-    @Test
-    fun getValueOrDefault() {
+        val properties = getEmptyHashDataProperties()
+        properties.putFloat("test.short",12.3f)
+        properties.putString("test.string","format data is %{test.short}.")
+        assertEquals(properties.getString("test.string"),"format data is 12.3.")
     }
 
     @Test
@@ -67,6 +81,10 @@ internal class HashDataPropertiesTest {
 
     @Test
     fun getInt() {
+    }
+
+    @Test
+    fun getFloat() {
     }
 
     @Test
@@ -90,7 +108,7 @@ internal class HashDataPropertiesTest {
     }
 
     @Test
-    fun getObject() {
+    fun getLong() {
     }
 
     @Test
@@ -99,6 +117,10 @@ internal class HashDataPropertiesTest {
 
     @Test
     fun getIntOrDefault() {
+    }
+
+    @Test
+    fun getFloatOrDefault() {
     }
 
     @Test
@@ -122,7 +144,15 @@ internal class HashDataPropertiesTest {
     }
 
     @Test
-    fun getObjectOrDefault() {
+    fun getLongOrDefault() {
+    }
+
+    @Test
+    fun setValue() {
+    }
+
+    @Test
+    fun getValue() {
     }
 
     @Test
@@ -142,11 +172,7 @@ internal class HashDataPropertiesTest {
     }
 
     @Test
-    fun get() {
-    }
-
-    @Test
-    fun set() {
+    fun testToString() {
     }
 
     @Test
