@@ -1,15 +1,12 @@
 package com.github.openEdgn.dataFormat4K.prop.io
 
 import com.github.openEdgn.dataFormat4K.prop.data.PropData
-import javafx.scene.input.DataFormat
+import com.github.openEdgn.dataFormat4K.prop.enums.DataType
 import org.slf4j.LoggerFactory
 import java.io.*
 import java.lang.Exception
 import java.lang.NullPointerException
-import java.lang.RuntimeException
 import java.net.URLDecoder
-import java.util.*
-import java.util.regex.Pattern
 
 
 /**
@@ -46,19 +43,26 @@ interface DataSerializableFactory {
 
         override fun input(reader: Reader, container: (String, PropData) -> Unit): Long {
             val bufferedReader = BufferedReader(reader)
+            var resultId: Long = 0
             bufferedReader.lines().forEach {
-                try {
-                    val key = (nameRegex.find(it)
-                            ?: throw NullPointerException("未发现<name></name>.")).groupValues[0]
-                    val type = (typeRegex.find(it)
-                            ?: throw NullPointerException("未发现<type></type>.")).groupValues[0]
-                    val value = (valueRegex.find(it)
-                            ?: throw NullPointerException("未发现<value></value>.")).groupValues[0]
-                } catch (e: Exception) {
-
+                if (it.startsWith("<data ") && it.endsWith("<data>")) {
+                    try {
+                        val key = (nameRegex.find(it)
+                                ?: throw NullPointerException("未发现<name></name>.")).groupValues[0]
+                        val type = (typeRegex.find(it)
+                                ?: throw NullPointerException("未发现<type></type>.")).groupValues[0]
+                        val value = (valueRegex.find(it)
+                                ?: throw NullPointerException("未发现<value></value>.")).groupValues[0]
+                        container(key, PropData(value, DataType.valueOf(type)))
+                        resultId++
+                    } catch (e: Exception) {
+                        logger.warn("列 $it 无法添加，原因是 ${e.message} .")
+                    }
+                } else {
+                    logger.debug("skip item : $it")
                 }
             }
-            return 0
+            return resultId
         }
 
         override fun output(container: Map<String, PropData>, writer: Writer): Long {
