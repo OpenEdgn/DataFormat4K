@@ -4,7 +4,7 @@ import java.io.Reader
 import java.io.Serializable
 import java.io.Writer
 
-interface IDataProperties : Serializable{
+interface IDataProperties : Serializable {
     /**
      * 从流中导入数据
      * @param properties Reader 字符流
@@ -34,7 +34,6 @@ interface IDataProperties : Serializable{
     fun removeAll(): Long
 
 
-
     /**
      *   根据键值来设置数据
      *
@@ -44,7 +43,10 @@ interface IDataProperties : Serializable{
      * @param value Any 数据
      * @return 如果数据不符合规范（无法添加）则返回 false
      */
-    operator fun set(key: String, value: Any):Boolean
+    operator fun <T> set(key: String, value: T): Boolean
+
+
+
 
     override fun toString(): String
 
@@ -58,7 +60,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @return Boolean 是否存在
      */
-    fun containsKey(key: String):Boolean
+    fun containsKey(key: String): Boolean
 
     /**
      * 将键值下的数据替换为新的数据
@@ -81,7 +83,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Byte 类型的数据
      */
-    fun putByte(key: String, value: Byte):IDataProperties
+    fun putByte(key: String, value: Byte): IDataProperties
 
     /**
      *
@@ -92,7 +94,8 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Int 类型的数据
      */
-    fun putInt(key: String, value: Int):IDataProperties
+    fun putInt(key: String, value: Int): IDataProperties
+
     /**
      *
      * 设置 Float 类型的数据到 key 下
@@ -102,7 +105,8 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Float 类型的数据
      */
-    fun putFloat(key: String, value: Float):IDataProperties
+    fun putFloat(key: String, value: Float): IDataProperties
+
     /**
      *
      * 设置 Long 类型的数据到 key 下
@@ -112,7 +116,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Long 类型的数据
      */
-    fun putLong(key: String, value: Long):IDataProperties
+    fun putLong(key: String, value: Long): IDataProperties
 
     /**
      *
@@ -123,7 +127,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Short 类型的数据
      */
-    fun putShort(key: String, value: Short):IDataProperties
+    fun putShort(key: String, value: Short): IDataProperties
 
     /**
      *
@@ -134,7 +138,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Double 类型的数据
      */
-    fun putDouble(key: String, value: Double):IDataProperties
+    fun putDouble(key: String, value: Double): IDataProperties
 
     /**
      *
@@ -145,7 +149,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Boolean 类型的数据
      */
-    fun putBoolean(key: String, value: Boolean):IDataProperties
+    fun putBoolean(key: String, value: Boolean): IDataProperties
 
     /**
      *
@@ -156,7 +160,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value Char 类型的数据
      */
-    fun putChar(key: String, value: Char):IDataProperties
+    fun putChar(key: String, value: Char): IDataProperties
 
     /**
      *
@@ -167,7 +171,7 @@ interface IDataProperties : Serializable{
      * @param key String 键值
      * @param value String 类型的数据
      */
-    fun putString(key: String, value: String):IDataProperties
+    fun putString(key: String, value: String): IDataProperties
 
     /**
      * 根据键值获取 Byte 类型的数据
@@ -188,6 +192,7 @@ interface IDataProperties : Serializable{
      * @return Int 类型的数据或者 NULL
      */
     fun getInt(key: String): Int?
+
     /**
      * 根据键值获取 Long 类型的数据
      *
@@ -197,6 +202,7 @@ interface IDataProperties : Serializable{
      * @return Long 类型的数据或者 NULL
      */
     fun getLong(key: String): Long?
+
     /**
      * 根据键值获取 Float 类型的数据
      *
@@ -283,6 +289,7 @@ interface IDataProperties : Serializable{
      * @return Int 通过键值获取到的数值或者 defaultValue 的数值
      */
     fun getIntOrDefault(key: String, defaultValue: Int): Int
+
     /**
      * 根据键值获取 Float 类型的数据
      *
@@ -321,6 +328,7 @@ interface IDataProperties : Serializable{
      * @return Double 通过键值获取到的数值或者 defaultValue 的数值
      */
     fun getDoubleOrDefault(key: String, defaultValue: Double): Double
+
     /**
      * 根据键值获取 Long 类型的数据
      *
@@ -377,6 +385,6 @@ interface IDataProperties : Serializable{
     /**
      * 数据的数目
      */
-    val length:Int
+    val length: Int
 
 }

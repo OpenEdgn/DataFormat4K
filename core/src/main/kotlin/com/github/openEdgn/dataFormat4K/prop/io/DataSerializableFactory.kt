@@ -45,7 +45,7 @@ interface DataSerializableFactory {
             val bufferedReader = BufferedReader(reader)
             var resultId: Long = 0
             bufferedReader.lines().forEach {
-                if (it.startsWith("<data ") && it.endsWith("<data>")) {
+                if (it.startsWith("<data") && it.endsWith("</data>")) {
                     try {
                         val key = (nameRegex.find(it)
                                 ?: throw NullPointerException("未发现<name></name>.")).groupValues[0]

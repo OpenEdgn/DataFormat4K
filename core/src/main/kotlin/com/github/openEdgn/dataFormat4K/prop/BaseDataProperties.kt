@@ -11,8 +11,8 @@ abstract class BaseDataProperties : IDataProperties {
     abstract fun setValue(key: String, value: Any, dataType: DataType): Boolean
     protected abstract fun <T> getValue(key: String, dataType: DataType): T?
 
-    override fun set(key: String, value: Any): Boolean {
-        val type = DataType.format(value)
+    override fun <T> set(key: String, value: T): Boolean {
+        val type = DataType.format(value as Any)
         if (type == DataType.UNKNOWN) {
             logger.debug("添加了新字段{},但数据类型{}并非可序列化的类型，不允许添加！", key, value.javaClass.simpleName)
             return false
