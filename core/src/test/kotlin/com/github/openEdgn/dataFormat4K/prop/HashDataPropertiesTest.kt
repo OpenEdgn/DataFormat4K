@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.slf4j.LoggerFactory
 import java.lang.StringBuilder
 import java.net.URLEncoder
+import java.util.regex.Pattern
 import kotlin.math.log
 
 internal class HashDataPropertiesTest {
@@ -196,7 +197,9 @@ internal class HashDataPropertiesTest {
     }
     @Test
     fun simpleTest() {
-        val data = "asasasa\r\nasdas%dasd.adas"
-        println(URLEncoder.encode(data,"utf-8"))
+
+       val data = "<data><name>main.key</name><type>STRING</type><value>呱呱呱呱呱呱</value></data>"
+
+        println(Regex("(?<=<name>).+(?=</name>)").find(data)!!.groupValues[0])
     }
 }

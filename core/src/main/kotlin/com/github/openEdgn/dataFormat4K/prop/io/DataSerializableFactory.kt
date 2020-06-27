@@ -2,11 +2,14 @@ package com.github.openEdgn.dataFormat4K.prop.io
 
 import com.github.openEdgn.dataFormat4K.prop.data.PropData
 import javafx.scene.input.DataFormat
-import java.io.PrintWriter
-import java.io.Reader
-import java.io.Writer
+import org.slf4j.LoggerFactory
+import java.io.*
+import java.lang.Exception
+import java.lang.NullPointerException
+import java.lang.RuntimeException
 import java.net.URLDecoder
 import java.util.*
+import java.util.regex.Pattern
 
 
 /**
@@ -32,19 +35,42 @@ interface DataSerializableFactory {
 
     companion object {
         @Volatile
-        var defaultFactory: DataSerializableFactory = TODO()
+        var defaultFactory: DataSerializableFactory = SimpleDataSerializableFactory()
     }
 
     class SimpleDataSerializableFactory : DataSerializableFactory {
+        private val logger = LoggerFactory.getLogger(javaClass)
+        private val nameRegex = Regex("(?<=<name>).+(?=</name>)")
+        private val typeRegex = Regex("(?<=<type>).+(?=</type>)")
+        private val valueRegex = Regex("(?<=<value>).+(?=</value>)")
+
         override fun input(reader: Reader, container: (String, PropData) -> Unit): Long {
-            TODO("Not yet implemented")
+            val bufferedReader = BufferedReader(reader)
+            bufferedReader.lines().forEach {
+                try {
+                    val key = (nameRegex.find(it)
+                            ?: throw NullPointerException("未发现<name></name>.")).groupValues[0]
+                    val type = (typeRegex.find(it)
+                            ?: throw NullPointerException("未发现<type></type>.")).groupValues[0]
+                    val value = (valueRegex.find(it)
+                            ?: throw NullPointerException("未发现<value></value>.")).groupValues[0]
+                } catch (e: Exception) {
+
+                }
+            }
+            return 0
         }
 
         override fun output(container: Map<String, PropData>, writer: Writer): Long {
-            val printWriter = PrintWriter(writer)
-            val properties = Properties()
+            val printWriter = PrintWriter(writer, true)
+            printWriter.println("<!-- 并非XML解析，每一条数据仅占一行，请保持固定格式-->")
             container.forEach { (t, u) ->
-                printWriter.println("<data name=\"${dataFormat(t)}\" type=\"${u.type.name}\">${dataFormat(u.data)}</data>")
+                printWriter.println("<data>" +
+                        "<name>${dataFormat(t)}</name>" +
+                        "<type>${u.type.name}</type>" +
+                        "<value>${dataFormat(u.data)}</value>" +
+                        "</data>")
+
             }
             return container.size.toLong()
         }
