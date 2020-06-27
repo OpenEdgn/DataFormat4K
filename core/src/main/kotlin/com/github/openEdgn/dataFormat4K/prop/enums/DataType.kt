@@ -1,4 +1,4 @@
-package com.github.openEdgn.dataFormat4K.prop;
+package com.github.openEdgn.dataFormat4K.prop.enums;
 
 enum class DataType(val clazz: Class<*>) {
     BYTE(Byte::class.java),

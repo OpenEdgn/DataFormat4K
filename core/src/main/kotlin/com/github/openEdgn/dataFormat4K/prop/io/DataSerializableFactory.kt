@@ -1,9 +1,11 @@
 package com.github.openEdgn.dataFormat4K.prop.io
 
-import com.github.openEdgn.dataFormat4K.prop.PropData
+import com.github.openEdgn.dataFormat4K.prop.data.PropData
+import javafx.scene.input.DataFormat
 import java.io.PrintWriter
 import java.io.Reader
 import java.io.Writer
+import java.net.URLDecoder
 import java.util.*
 
 
@@ -41,11 +43,15 @@ interface DataSerializableFactory {
         override fun output(container: Map<String, PropData>, writer: Writer): Long {
             val printWriter = PrintWriter(writer)
             val properties = Properties()
-            container.forEach { t, u ->
-                TODO("Not yet implemented")
-
+            container.forEach { (t, u) ->
+                printWriter.println("<data name=\"${dataFormat(t)}\" type=\"${u.type.name}\">${dataFormat(u.data)}</data>")
             }
             return container.size.toLong()
+        }
+
+
+        private fun dataFormat(t: String): String {
+            return URLDecoder.decode(t, "utf-8")
         }
 
     }

@@ -1,5 +1,6 @@
 package com.github.openEdgn.dataFormat4K.prop
 
+import com.github.openEdgn.dataFormat4K.prop.enums.DataType
 import org.slf4j.LoggerFactory
 
 
@@ -9,7 +10,7 @@ abstract class BaseDataProperties : IDataProperties {
 
 
     abstract fun setValue(key: String, value: Any, dataType: DataType): Boolean
-    abstract fun <T> getValue(key: String, dataType: DataType): T?
+    protected abstract fun <T> getValue(key: String, dataType: DataType): T?
 
     override fun set(key: String, value: Any): Boolean {
         val type = DataType.format(value)

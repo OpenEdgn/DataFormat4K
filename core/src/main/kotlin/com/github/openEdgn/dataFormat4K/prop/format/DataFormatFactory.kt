@@ -1,6 +1,6 @@
 package com.github.openEdgn.dataFormat4K.prop.format
 
-import com.github.openEdgn.dataFormat4K.prop.PropData
+import com.github.openEdgn.dataFormat4K.prop.data.PropData
 import java.lang.StringBuilder
 import java.util.regex.Pattern
 import kotlin.collections.HashSet

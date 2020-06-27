@@ -5,9 +5,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import org.slf4j.LoggerFactory
+import java.lang.StringBuilder
+import java.net.URLEncoder
+import kotlin.math.log
 
 internal class HashDataPropertiesTest {
-
+    private val logger = LoggerFactory.getLogger(javaClass)
     @BeforeEach
     fun setUp() {
     }
@@ -16,7 +20,7 @@ internal class HashDataPropertiesTest {
     fun tearDown() {
     }
 
-    private fun getEmptyHashDataProperties(ignoreCase: Boolean = true): HashDataProperties {
+    private fun getEmptyHashDataProperties(): HashDataProperties {
         return HashDataProperties()
     }
     @Test
@@ -189,5 +193,10 @@ internal class HashDataPropertiesTest {
 
     @Test
     fun testGetStringOrDefault() {
+    }
+    @Test
+    fun simpleTest() {
+        val data = "asasasa\r\nasdas%dasd.adas"
+        println(URLEncoder.encode(data,"utf-8"))
     }
 }

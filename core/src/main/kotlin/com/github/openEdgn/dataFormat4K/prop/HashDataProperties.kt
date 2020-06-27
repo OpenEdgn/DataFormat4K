@@ -1,6 +1,8 @@
 package com.github.openEdgn.dataFormat4K.prop
 
-import com.github.openEdgn.dataFormat4K.prop.DataType.*
+import com.github.openEdgn.dataFormat4K.prop.data.PropData
+import com.github.openEdgn.dataFormat4K.prop.enums.DataType
+import com.github.openEdgn.dataFormat4K.prop.enums.DataType.*
 import com.github.openEdgn.dataFormat4K.prop.format.DataFormatFactory
 import com.github.openEdgn.dataFormat4K.prop.io.DataSerializableFactory
 import java.io.Reader
@@ -163,10 +165,10 @@ class HashDataProperties : BaseDataProperties() {
             return formatString(super.getStringOrDefault(key, defaultValue))
         }
     }
-    private val systemProp:Map<String,PropData> by lazy {
-        val prop :MutableMap<String,PropData> = mutableMapOf()
+    private val systemProp:Map<String, PropData> by lazy {
+        val prop :MutableMap<String, PropData> = mutableMapOf()
         System.getProperties().forEach { t, u ->
-            prop[t as String] = PropData(u.toString(),STRING)
+            prop[t as String] = PropData(u.toString(), STRING)
         }
         prop
     }
