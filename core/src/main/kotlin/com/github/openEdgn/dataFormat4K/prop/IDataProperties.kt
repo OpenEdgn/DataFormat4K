@@ -374,5 +374,9 @@ interface IDataProperties : Serializable{
     fun getBooleanOrDefault(key: String, defaultValue: Boolean): Boolean
 
 
+    /**
+     * 数据的数目
+     */
+    val length:Int
 
 }

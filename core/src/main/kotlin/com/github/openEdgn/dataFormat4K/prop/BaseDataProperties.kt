@@ -8,7 +8,6 @@ abstract class BaseDataProperties : IDataProperties {
     protected val logger = LoggerFactory.getLogger(javaClass)!!
 
 
-
     abstract fun setValue(key: String, value: Any, dataType: DataType): Boolean
     protected abstract fun <T> getValue(key: String, dataType: DataType): T?
 
@@ -21,47 +20,47 @@ abstract class BaseDataProperties : IDataProperties {
         return setValue(key, value, type)
     }
 
-    override fun putByte(key: String, value: Byte) :IDataProperties{
+    override fun putByte(key: String, value: Byte): IDataProperties {
         setValue(key, value, DataType.BYTE)
         return this
     }
 
-    override fun putInt(key: String, value: Int) :IDataProperties{
+    override fun putInt(key: String, value: Int): IDataProperties {
         setValue(key, value, DataType.INTEGER)
         return this
     }
 
-    override fun putFloat(key: String, value: Float) :IDataProperties{
+    override fun putFloat(key: String, value: Float): IDataProperties {
         setValue(key, value, DataType.FLOAT)
         return this
     }
 
-    override fun putLong(key: String, value: Long) :IDataProperties{
+    override fun putLong(key: String, value: Long): IDataProperties {
         setValue(key, value, DataType.LONG)
         return this
     }
 
-    override fun putShort(key: String, value: Short):IDataProperties {
+    override fun putShort(key: String, value: Short): IDataProperties {
         setValue(key, value, DataType.SHORT)
         return this
     }
 
-    override fun putDouble(key: String, value: Double) :IDataProperties{
+    override fun putDouble(key: String, value: Double): IDataProperties {
         setValue(key, value, DataType.DOUBLE)
         return this
     }
 
-    override fun putBoolean(key: String, value: Boolean):IDataProperties {
+    override fun putBoolean(key: String, value: Boolean): IDataProperties {
         setValue(key, value, DataType.BOOLEAN)
         return this
     }
 
-    override fun putChar(key: String, value: Char) :IDataProperties{
+    override fun putChar(key: String, value: Char): IDataProperties {
         setValue(key, value, DataType.CHAR)
         return this
     }
 
-    override fun putString(key: String, value: String):IDataProperties {
+    override fun putString(key: String, value: String): IDataProperties {
         setValue(key, value, DataType.STRING)
         return this
     }
@@ -139,6 +138,7 @@ abstract class BaseDataProperties : IDataProperties {
     override fun getLongOrDefault(key: String, defaultValue: Long): Long {
         return resultValueOrNull(getLong(key), defaultValue)
     }
+
     private fun <T> resultValueOrNull(value: T?, defaultValue: T): T {
         return value ?: defaultValue
     }

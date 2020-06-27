@@ -7,13 +7,6 @@ interface DataPropertiesFactory {
      */
     fun createEmptyProperties(): IDataProperties
 
-    /**
-     * 从现有的克隆一个 IDataProperties
-     *
-     * @param dataProperties IDataProperties 现有的 IDataProperties
-     * @return IDataProperties IDataProperties
-     */
-    fun clone(dataProperties: IDataProperties): IDataProperties
 
     companion object{
         /**
@@ -26,8 +19,6 @@ interface DataPropertiesFactory {
     class SimpleDataPropertiesFactory:DataPropertiesFactory{
         override fun createEmptyProperties(): IDataProperties = HashDataProperties()
 
-        override fun clone(dataProperties: IDataProperties): IDataProperties {
-            TODO("Not yet implemented")
-        }
+
     }
 }

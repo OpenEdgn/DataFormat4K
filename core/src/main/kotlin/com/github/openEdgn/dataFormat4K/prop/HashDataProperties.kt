@@ -11,6 +11,7 @@ import java.util.HashMap
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
 class HashDataProperties : BaseDataProperties() {
 
     private val hashMap = HashMap<String, PropData>()
@@ -18,6 +19,8 @@ class HashDataProperties : BaseDataProperties() {
     private val readLock = readWriteLock.readLock()
     private val writeLock = readWriteLock.writeLock()
 
+    override val length: Int
+        get() = hashMap.size
 
     override fun setValue(key: String, value: Any, dataType: DataType): Boolean {
         return writeLock.lock {
@@ -40,7 +43,6 @@ class HashDataProperties : BaseDataProperties() {
         }
 
     }
-
     override fun <T> getValue(key: String, dataType: DataType): T? {
         var result: T? = null
         readLock.lock {
@@ -143,7 +145,6 @@ class HashDataProperties : BaseDataProperties() {
             } else {
                 hashMap.remove(key)
                 set(key, value)
-                true
             }
         }
     }
