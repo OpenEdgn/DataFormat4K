@@ -1,4 +1,4 @@
-package com.github.openEdgn.dataFormat4K.prop.format
+package com.github.openEdgn.dataFormat4K.factory
 
 import com.github.openEdgn.dataFormat4K.data.DataItem
 import java.lang.StringBuilder

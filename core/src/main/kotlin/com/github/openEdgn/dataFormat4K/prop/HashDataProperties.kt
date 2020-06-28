@@ -3,8 +3,8 @@ package com.github.openEdgn.dataFormat4K.prop
 import com.github.openEdgn.dataFormat4K.data.DataItem
 import com.github.openEdgn.dataFormat4K.enums.DataType
 import com.github.openEdgn.dataFormat4K.enums.DataType.*
-import com.github.openEdgn.dataFormat4K.prop.format.DataFormatFactory
-import com.github.openEdgn.dataFormat4K.prop.io.DataSerializableFactory
+import com.github.openEdgn.dataFormat4K.factory.DataFormatFactory
+import com.github.openEdgn.dataFormat4K.factory.DataSerializableFactory
 import java.io.Reader
 import java.io.Writer
 import java.util.HashMap

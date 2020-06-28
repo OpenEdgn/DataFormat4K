@@ -13,13 +13,14 @@ interface IArgsEdit {
      *
      * 添加一个选项模块
      *
+     *  注意，key字段不会生效，需要指定 `alias` 来确定
+     *
      * @param key String 键值
-     * @param formatType DataType 数据格式化类型
-     * @param defaultVale Any 默认数值
+     * @param defaultVale T 默认数值
      * @param alias Array<out String> 代号
      * @return Boolean 是否添加成功
      */
-    fun addItem(key: String, formatType: DataType, defaultVale: Any, vararg alias: String): Boolean
+    fun <T> addItem(key: String, defaultVale: T?, vararg alias: String): Boolean
 
     /**
      * 移除一个选项模块
@@ -45,6 +46,11 @@ interface IArgsEdit {
     fun containsAlias(alias: String): Boolean
 
 
+    /**
+     * 根据一个 args 来得到
+     * @param args Array<String>
+     * @return IArgs
+     */
     fun createIArgs(args: Array<String>): IArgs
 
 }

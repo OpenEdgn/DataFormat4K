@@ -1,4 +1,7 @@
-package com.github.openEdgn.dataFormat4K.prop
+package com.github.openEdgn.dataFormat4K.factory
+
+import com.github.openEdgn.dataFormat4K.prop.HashDataProperties
+import com.github.openEdgn.dataFormat4K.prop.IDataProperties
 
 interface DataPropertiesFactory {
     /**
@@ -13,10 +16,10 @@ interface DataPropertiesFactory {
          * 默认的实现方法
          */
         @Volatile
-        var defaultFactory :DataPropertiesFactory = SimpleDataPropertiesFactory()
+        var defaultFactory : DataPropertiesFactory = SimpleDataPropertiesFactory()
 
     }
-    class SimpleDataPropertiesFactory:DataPropertiesFactory{
+    class SimpleDataPropertiesFactory: DataPropertiesFactory {
         override fun createEmptyProperties(): IDataProperties = HashDataProperties()
 
 

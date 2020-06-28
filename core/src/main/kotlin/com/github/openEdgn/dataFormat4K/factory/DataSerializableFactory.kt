@@ -1,4 +1,4 @@
-package com.github.openEdgn.dataFormat4K.prop.io
+package com.github.openEdgn.dataFormat4K.factory
 
 import com.github.openEdgn.dataFormat4K.data.DataItem
 import com.github.openEdgn.dataFormat4K.enums.DataType

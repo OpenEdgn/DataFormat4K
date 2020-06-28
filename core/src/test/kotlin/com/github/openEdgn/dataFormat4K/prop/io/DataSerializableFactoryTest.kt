@@ -1,11 +1,10 @@
 package com.github.openEdgn.dataFormat4K.prop.io
 
-import com.github.openEdgn.dataFormat4K.prop.DataPropertiesFactory
+import com.github.openEdgn.dataFormat4K.factory.DataPropertiesFactory
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 
 class DataSerializableFactoryTest {
     @Test
