@@ -1,6 +1,6 @@
 package com.github.openEdgn.dataFormat4K.prop
 
-import com.github.openEdgn.dataFormat4K.prop.enums.DataType
+import com.github.openEdgn.dataFormat4K.enums.DataType
 import org.slf4j.LoggerFactory
 
 

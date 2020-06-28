@@ -1,8 +1,8 @@
 package com.github.openEdgn.dataFormat4K.prop
 
-import com.github.openEdgn.dataFormat4K.prop.data.PropData
-import com.github.openEdgn.dataFormat4K.prop.enums.DataType
-import com.github.openEdgn.dataFormat4K.prop.enums.DataType.*
+import com.github.openEdgn.dataFormat4K.data.DataItem
+import com.github.openEdgn.dataFormat4K.enums.DataType
+import com.github.openEdgn.dataFormat4K.enums.DataType.*
 import com.github.openEdgn.dataFormat4K.prop.format.DataFormatFactory
 import com.github.openEdgn.dataFormat4K.prop.io.DataSerializableFactory
 import java.io.Reader
@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
 class HashDataProperties : BaseDataProperties() {
 
-    private val hashMap = HashMap<String, PropData>()
+    private val hashMap = HashMap<String, DataItem>()
     private val readWriteLock = ReentrantReadWriteLock()
     private val readLock = readWriteLock.readLock()
     private val writeLock = readWriteLock.writeLock()
@@ -25,15 +25,15 @@ class HashDataProperties : BaseDataProperties() {
     override fun setValue(key: String, value: Any, dataType: DataType): Boolean {
         return writeLock.lock {
             when (dataType) {
-                BYTE -> hashMap[key] = PropData((value as Byte).toString(), dataType)
-                FLOAT -> hashMap[key] = PropData((value as Float).toString(), dataType)
-                INTEGER -> hashMap[key] = PropData((value as Int).toString(), dataType)
-                LONG -> hashMap[key] = PropData((value as Long).toString(), dataType)
-                SHORT -> hashMap[key] = PropData((value as Short).toString(), dataType)
-                DOUBLE -> hashMap[key] = PropData((value as Double).toString(), dataType)
-                BOOLEAN -> hashMap[key] = PropData((value as Boolean).toString(), dataType)
-                CHAR -> hashMap[key] = PropData((value as Char).toString(), dataType)
-                STRING -> hashMap[key] = PropData(value as String, dataType)
+                BYTE -> hashMap[key] = DataItem((value as Byte).toString(), dataType)
+                FLOAT -> hashMap[key] = DataItem((value as Float).toString(), dataType)
+                INTEGER -> hashMap[key] = DataItem((value as Int).toString(), dataType)
+                LONG -> hashMap[key] = DataItem((value as Long).toString(), dataType)
+                SHORT -> hashMap[key] = DataItem((value as Short).toString(), dataType)
+                DOUBLE -> hashMap[key] = DataItem((value as Double).toString(), dataType)
+                BOOLEAN -> hashMap[key] = DataItem((value as Boolean).toString(), dataType)
+                CHAR -> hashMap[key] = DataItem((value as Char).toString(), dataType)
+                STRING -> hashMap[key] = DataItem(value as String, dataType)
                 else -> {
                     logger.debug("未知数据类型")
                     return@lock false
@@ -166,16 +166,16 @@ class HashDataProperties : BaseDataProperties() {
             return formatString(super.getStringOrDefault(key, defaultValue))
         }
     }
-    private val systemProp:Map<String, PropData> by lazy {
-        val prop :MutableMap<String, PropData> = mutableMapOf()
+    private val systemItem:Map<String, DataItem> by lazy {
+        val item :MutableMap<String, DataItem> = mutableMapOf()
         System.getProperties().forEach { t, u ->
-            prop[t as String] = PropData(u.toString(), STRING)
+            item[t as String] = DataItem(u.toString(), STRING)
         }
-        prop
+        item
     }
     private fun formatString(source: String): String {
         val result = DataFormatFactory.defaultValue.fill(source, hashMap, false)
-        return DataFormatFactory.defaultValue.fill(result, systemProp, false)
+        return DataFormatFactory.defaultValue.fill(result, systemItem, false)
     }
     /**
      * 读写锁方案

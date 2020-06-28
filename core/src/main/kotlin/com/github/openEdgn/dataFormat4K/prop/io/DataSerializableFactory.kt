@@ -1,7 +1,7 @@
 package com.github.openEdgn.dataFormat4K.prop.io
 
-import com.github.openEdgn.dataFormat4K.prop.data.PropData
-import com.github.openEdgn.dataFormat4K.prop.enums.DataType
+import com.github.openEdgn.dataFormat4K.data.DataItem
+import com.github.openEdgn.dataFormat4K.enums.DataType
 import org.slf4j.LoggerFactory
 import java.io.*
 import java.lang.Exception
@@ -19,7 +19,7 @@ interface DataSerializableFactory {
      * @param container Function2<String, PropData, Unit> 放入的容器 （非线程安全）
      * @return Long 格式化后的数目
      */
-    fun input(reader: Reader, container: (String, PropData) -> Unit): Long
+    fun input(reader: Reader, container: (String, DataItem) -> Unit): Long
 
     /**
      * 将容器下的数据序列化输出到 write 下
@@ -28,7 +28,7 @@ interface DataSerializableFactory {
      * @param writer Writer 接收的接口
      * @return Long 序列化数据的数目
      */
-    fun output(container: Map<String, PropData>, writer: Writer): Long
+    fun output(container: Map<String, DataItem>, writer: Writer): Long
 
     companion object {
         @Volatile
@@ -41,7 +41,7 @@ interface DataSerializableFactory {
         private val typeRegex = Regex("(?<=<type>).+(?=</type>)")
         private val valueRegex = Regex("(?<=<value>).+(?=</value>)")
 
-        override fun input(reader: Reader, container: (String, PropData) -> Unit): Long {
+        override fun input(reader: Reader, container: (String, DataItem) -> Unit): Long {
             val bufferedReader = BufferedReader(reader)
             var resultId: Long = 0
             bufferedReader.lines().forEach {
@@ -53,7 +53,7 @@ interface DataSerializableFactory {
                                 ?: throw NullPointerException("未发现<type></type>.")).groupValues[0]
                         val value = (valueRegex.find(it)
                                 ?: throw NullPointerException("未发现<value></value>.")).groupValues[0]
-                        container(key, PropData(value, DataType.valueOf(type)))
+                        container(key, DataItem(value, DataType.valueOf(type)))
                         resultId++
                     } catch (e: Exception) {
                         logger.warn("列 $it 无法添加，原因是 ${e.message} .")
@@ -65,7 +65,7 @@ interface DataSerializableFactory {
             return resultId
         }
 
-        override fun output(container: Map<String, PropData>, writer: Writer): Long {
+        override fun output(container: Map<String, DataItem>, writer: Writer): Long {
             val printWriter = PrintWriter(writer, true)
             printWriter.println("<!-- 并非XML解析，每一条数据仅占一行，请保持固定格式-->")
             container.forEach { (t, u) ->
