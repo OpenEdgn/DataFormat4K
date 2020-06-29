@@ -21,6 +21,7 @@ interface IDataProperties :DataReader,DataWriter{
      */
     fun exportData(writer: Writer): Long
 
+
     override fun toString(): String
 
     override fun hashCode(): Int

@@ -1,4 +1,4 @@
-package com.github.openEdgn.dataFormat4K.prop.io
+package com.github.openEdgn.dataFormat4K.prop
 
 import com.github.openEdgn.dataFormat4K.factory.DataPropertiesFactory
 import org.junit.jupiter.api.Assertions.*
