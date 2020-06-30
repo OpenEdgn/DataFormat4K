@@ -26,9 +26,5 @@ enum class DataType(val clazz: Class<*>) {
             }
             return UNKNOWN
         }
-
-
-
-
     }
 }
