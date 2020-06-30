@@ -14,12 +14,13 @@ enum class DataType(val clazz: Class<*>) {
 
     companion object {
 
-        fun format(any: Any): DataType {
+        fun format(any: Any) = formatClass(any.javaClass)
+
+        fun formatClass(formatClazz: Class<*>): DataType {
             values().forEach {
                 if (it != UNKNOWN) {
-                    val javaClass = any.javaClass
                     val clazz = it.clazz
-                    if (clazz.isAssignableFrom(javaClass)) {
+                    if (clazz.isAssignableFrom(formatClazz)) {
                         return it
                     }
                 }

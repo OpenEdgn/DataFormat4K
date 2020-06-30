@@ -2,14 +2,14 @@ package com.github.openEdgn.dataFormat4K.prop
 
 import com.github.openEdgn.dataFormat4K.args.ArgsField
 import com.github.openEdgn.dataFormat4K.args.ArgsIgnore
-import com.github.openEdgn.dataFormat4K.args.ArgsLoad
+import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
+import java.util.*
 
 class Test {
-    @ArgsLoad
-    @ArgsField("--config","-c")
-    private lateinit var config:String
-
-
-    @ArgsIgnore
-    private val version:String = "1.0"
+    private val logger  = LoggerFactory.getLogger(javaClass)
+    @Test
+    fun test() {
+        logger.info(Locale.SIMPLIFIED_CHINESE.toString())
+    }
 }
