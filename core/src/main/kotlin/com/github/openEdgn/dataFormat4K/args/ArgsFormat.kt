@@ -1,7 +1,9 @@
 package com.github.openEdgn.dataFormat4K.args
 
+import com.github.openEdgn.dataFormat4K.data.DataItem
 import com.github.openEdgn.dataFormat4K.enums.DataType
 import com.github.openEdgn.dataFormat4K.enums.DataType.*
+import com.github.openEdgn.dataFormat4K.factory.DataFormatFactory
 import org.slf4j.LoggerFactory
 import java.lang.Exception
 import java.lang.RuntimeException
@@ -12,7 +14,13 @@ import kotlin.reflect.full.createInstance
 class ArgsFormat(vararg formatClasses: KClass<*>) {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val map = mutableMapOf<KClass<*>, Any>()
-
+    private val systemItem:Map<String, DataItem> by lazy {
+        val item :MutableMap<String, DataItem> = mutableMapOf()
+        System.getProperties().forEach { t, u ->
+            item[t as String] = DataItem(u.toString(), STRING)
+        }
+        item
+    }
     init {
         if (formatClasses.isEmpty()) {
             throw IndexOutOfBoundsException("实体类为空")
@@ -24,10 +32,10 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
         logger.debug("实体类已注册，共存在 {} 个,分别为 [{}] .", map.size, map.values.joinToString { it.javaClass.simpleName })
     }
 
-    fun load(data: Array<String>): Boolean {
+    fun loadArgs(data: Array<String>): Boolean {
         for (item in map.values) {
             if (load0(item, data)) {
-                logger.debug("实体类 {} 已读取成功。", item.javaClass.simpleName)
+                logger.debug("实体类 {} 注入完成 .", item.javaClass.simpleName)
             } else {
                 logger.debug("读取中止，args 未包含必须字段！")
                 return false
@@ -72,7 +80,6 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
     }
 
     private fun fillData(data: Any, declaredField: Field, dataStr: Array<String>, index: Int): Boolean {
-
         val dataType = DataType.formatClass(declaredField.type)
         if ((dataStr.size - 1) == index && dataType != BOOLEAN) {
             logger.warn("无法解析字段！因为此 alias 在 args 下已处于末尾！")
@@ -109,7 +116,7 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
      * 并且将返回原始引用
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> format(clazz: KClass<T>): T {
+    fun <T : Any> getBeanByType(clazz: KClass<T>): T {
         val data = map[clazz] ?: throw NullPointerException("未找到类 ${clazz.javaObjectType.name} ")
         return data as T
     }
@@ -127,44 +134,46 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
         declaredField.isAccessible = true
         when (DataType.formatClass(declaredField.type)) {
             BYTE -> {
-                logger.debug("字段类型为 Byte 类型，参数将数据 $value 注入到 ${declaredField.name} 下 ...")
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Byte",declaredField.name)
                 declaredField.setByte(data, value.toByte())
             }
             FLOAT -> {
-                logger.debug("字段类型为 Float 类型，参数将数据 $value 注入到 ${declaredField.name} 下 ...")
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Float",declaredField.name)
                 declaredField.setFloat(data, value.toFloat())
             }
             INTEGER -> {
-                logger.debug("字段类型为 Integer 类型，参数将数据 $value 注入到 ${declaredField.name} 下 ...")
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Integer",declaredField.name)
                 declaredField.setInt(data, value.toInt())
             }
             LONG -> {
-                logger.debug("字段类型为 Long 类型，参数将数据 $value 注入到 ${declaredField.name} 下 ...")
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Long",declaredField.name)
                 declaredField.setLong(data, value.toLong())
             }
             SHORT -> {
-                logger.debug("字段类型为 Short 类型，参数将数据 $value 注入到 ${declaredField.name} 下 ...")
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Short",declaredField.name)
                 declaredField.setShort(data, value.toShort())
             }
             DOUBLE -> {
-                logger.debug("字段类型为 Double 类型，参数将数据 $value 注入到 ${declaredField.name} 下 ...")
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Double",declaredField.name)
                 declaredField.setDouble(data, value.toDouble())
             }
             BOOLEAN -> {
-                logger.debug("字段类型为 Bool 类型，参数将数据 $value 注入到 ${declaredField.name} 下 ...")
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Boolean",declaredField.name)
                 declaredField.setBoolean(data, value.trim().toLowerCase() == "true")
             }
             CHAR -> {
-                logger.debug("字段类型为 Char 类型，参数将数据 $value 注入到 ${declaredField.name} 下 ...")
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Char",declaredField.name)
                 if (value.length > 1) throw ClassCastException("数据 $value 不是Char 类型")
                 declaredField.setChar(data, value[0])
             }
             STRING -> {
-                logger.debug("字段类型为 String 类型，参数将数据 $value 注入到 ${declaredField.name} 下 ...")
-                declaredField.set(data, value)
+                val formatData = DataFormatFactory.defaultValue.fill(value, systemItem, false)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",formatData,"String",declaredField.name)
+                declaredField.set(data, formatData)
             }
             else -> throw RuntimeException("字段不是已知可用的数据类型 ${declaredField.type.simpleName}，无法注入")
         }
+
     }
 
 

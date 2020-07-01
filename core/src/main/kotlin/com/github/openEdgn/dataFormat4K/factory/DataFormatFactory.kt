@@ -12,8 +12,8 @@ interface DataFormatFactory {
      *
      * @param source String 被格式化的数据
      * @param fillItems Hashtable<String, Any>
-     * @param ignoreCase Boolean
-     * @return String
+     * @param ignoreCase Boolean 是否忽略大小写 （如果 为 true 那么需要让 fillItems 的 KEY 为大写）
+     * @return String 格式化后的数据
      */
     fun fill(source: String, fillItems: Map<String, DataItem>, ignoreCase: Boolean = false): String
 
@@ -28,6 +28,7 @@ interface DataFormatFactory {
         private val regex = Regex("%\\{.+?}")
         private val spit = Regex("(^%\\{|}$)")
         private val pattern = Pattern.compile(regex.pattern)
+
 
         override fun fill(source: String, fillItems: Map<String, DataItem>, ignoreCase: Boolean): String {
             val container = StringBuilder()
