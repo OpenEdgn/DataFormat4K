@@ -8,19 +8,29 @@ import org.slf4j.LoggerFactory
 import java.lang.Exception
 import java.lang.RuntimeException
 import java.lang.reflect.Field
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
+/**
+ *  args 解析方案
+ *
+ * 针对 #main(String[] args) 解析字段的解决方案，
+ * 例如，`execute -c /etc/media.cfg --debug --skip`
+ *
+ * @constructor
+ */
 class ArgsFormat(vararg formatClasses: KClass<*>) {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val map = mutableMapOf<KClass<*>, Any>()
-    private val systemItem:Map<String, DataItem> by lazy {
-        val item :MutableMap<String, DataItem> = mutableMapOf()
+    private val systemItem: Map<String, DataItem> by lazy {
+        val item: MutableMap<String, DataItem> = mutableMapOf()
         System.getProperties().forEach { t, u ->
             item[t as String] = DataItem(u.toString(), STRING)
         }
         item
     }
+
     init {
         if (formatClasses.isEmpty()) {
             throw IndexOutOfBoundsException("实体类为空")
@@ -54,7 +64,7 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
                 continue
             }
             declaredField.isAccessible = true
-            val alias = mutableListOf("--${clazz.simpleName}-${declaredField.name}")
+            val alias = mutableListOf("-${declaredField.name.toLowerCase()}")
             var requiredField = false
             //表示必须要此字段
             declaredField.getDeclaredAnnotation(ArgsField::class.java)?.let {
@@ -134,41 +144,41 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
         declaredField.isAccessible = true
         when (DataType.formatClass(declaredField.type)) {
             BYTE -> {
-                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Byte",declaredField.name)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", value, "Byte", declaredField.name)
                 declaredField.setByte(data, value.toByte())
             }
             FLOAT -> {
-                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Float",declaredField.name)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", value, "Float", declaredField.name)
                 declaredField.setFloat(data, value.toFloat())
             }
             INTEGER -> {
-                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Integer",declaredField.name)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", value, "Integer", declaredField.name)
                 declaredField.setInt(data, value.toInt())
             }
             LONG -> {
-                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Long",declaredField.name)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", value, "Long", declaredField.name)
                 declaredField.setLong(data, value.toLong())
             }
             SHORT -> {
-                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Short",declaredField.name)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", value, "Short", declaredField.name)
                 declaredField.setShort(data, value.toShort())
             }
             DOUBLE -> {
-                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Double",declaredField.name)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", value, "Double", declaredField.name)
                 declaredField.setDouble(data, value.toDouble())
             }
             BOOLEAN -> {
-                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Boolean",declaredField.name)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", value, "Boolean", declaredField.name)
                 declaredField.setBoolean(data, value.trim().toLowerCase() == "true")
             }
             CHAR -> {
-                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",value,"Char",declaredField.name)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", value, "Char", declaredField.name)
                 if (value.length > 1) throw ClassCastException("数据 $value 不是Char 类型")
                 declaredField.setChar(data, value[0])
             }
             STRING -> {
                 val formatData = DataFormatFactory.defaultValue.fill(value, systemItem, false)
-                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.",formatData,"String",declaredField.name)
+                logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", formatData, "String", declaredField.name)
                 declaredField.set(data, formatData)
             }
             else -> throw RuntimeException("字段不是已知可用的数据类型 ${declaredField.type.simpleName}，无法注入")
@@ -176,5 +186,57 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
 
     }
 
+    private val simpleFormat: (String, List<String>) -> String = { doc: String, alias: List<String> ->
+        val result = StringBuilder()
+        for ((i,v) in alias.withIndex()) {
+            if (i == 0){
+                result.append("\t").append(v).append("\t\t").append(doc)
+            }else{
+                result.append("\t").append(v)
+            }
+            result.append("\r\n")
+
+        }
+        result.append("\r\n")
+        result.toString()
+    }
+
+    /**
+     * 打印帮助日志
+     *
+     * @param format Function2<String, List<String>, String> 帮助日志格式化工具
+     * @return String 帮助日志
+     */
+    fun printHelp(format: (String, List<String>) -> String = simpleFormat): String {
+        val builder = StringBuilder()
+        builder.append("使用方法：").append("\r\n")
+        map.keys.forEach {
+            for (field in it.java.declaredFields) {
+                val argsApis = field.getDeclaredAnnotation(ArgsApis::class.java)
+                val argsField = field.getDeclaredAnnotation(ArgsField::class.java)
+                var argApi: ArgApi? = null
+                if (argsApis != null) {
+                    argsApis.api.forEach { item ->
+                        val case = item.locale.trim().toLowerCase()
+                        if (case == Locale.getDefault().toString()) {
+                            argApi = item
+                        }
+                    }
+                    if (argApi == null) {
+                        argApi = argsApis.api[0]
+                    }
+
+                }
+                if (argsField != null && argApi != null) {
+                    builder.append(format(argApi!!.doc, argsField.alias.asList()))
+                } else if (argsField != null && argApi == null) {
+                    builder.append(format("", argsField.alias.asList()))
+                } else {
+                    builder.append(format("", listOf("-" + field.name.toLowerCase())))
+                }
+            }
+        }
+        return builder.toString()
+    }
 
 }
