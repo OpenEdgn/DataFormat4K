@@ -39,15 +39,15 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
             // 预先创建存放容器
             map[formatClass] = formatClass.createInstance()
         }
-        logger.debug("实体类已注册，共存在 {} 个,分别为 [{}] .", map.size, map.values.joinToString { it.javaClass.simpleName })
+        logger.info("实体类已注册，共存在 {} 个,分别为 [{}] .", map.size, map.values.joinToString { it.javaClass.simpleName })
     }
 
     fun loadArgs(data: Array<String>): Boolean {
         for (item in map.values) {
             if (load0(item, data)) {
-                logger.debug("实体类 {} 注入完成 .", item.javaClass.simpleName)
+                logger.info("实体类 {} 注入完成 .", item.javaClass.simpleName)
             } else {
-                logger.debug("读取中止，args 未包含必须字段！")
+                logger.warn("读取中止，args 未包含必须字段！")
                 return false
             }
         }
@@ -58,9 +58,9 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
         val clazz = item.javaClass
         for (declaredField in clazz.declaredFields) {
             if (declaredField.getDeclaredAnnotation(ArgsIgnore::class.java) != null ||
-                    DataType.formatClass(declaredField.type) == UNKNOWN) {
+                    DataType.formatClass(declaredField.type.kotlin.javaObjectType) == UNKNOWN) {
                 logger.debug("字段 {} 已标注“@ArgsIgnore“ 注解，或者{}不为基础数据类型 .",
-                        declaredField.name, declaredField.type.simpleName)
+                        declaredField.name, declaredField.type.kotlin.javaObjectType.simpleName)
                 continue
             }
             declaredField.isAccessible = true
@@ -90,15 +90,15 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
     }
 
     private fun fillData(data: Any, declaredField: Field, dataStr: Array<String>, index: Int): Boolean {
-        val dataType = DataType.formatClass(declaredField.type)
+        val dataType = DataType.formatClass(declaredField.type.kotlin.javaObjectType)
         if ((dataStr.size - 1) == index && dataType != BOOLEAN) {
             logger.warn("无法解析字段！因为此 alias 在 args 下已处于末尾！")
             return false
         }
-        val nextDataStr = dataStr[index + 1]
         when (dataType) {
             STRING, CHAR, BYTE, FLOAT, INTEGER, LONG, SHORT, DOUBLE -> {
                 try {
+                    val nextDataStr = dataStr[index + 1]
                     injection(data, declaredField, nextDataStr)
                     return true
                 } catch (e: Exception) {
@@ -109,13 +109,14 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
                 if ((dataStr.size - 1) == index) {
                     injection(data, declaredField, "true")
                 } else {
+                    val nextDataStr = dataStr[index + 1]
                     injection(data, declaredField, "${nextDataStr.trim().toLowerCase() == "true"}")
                 }
                 return true
             }
             UNKNOWN -> {
                 logger.warn("无法处理字段 {}，因为他不是一个基础数据类型 {}。", declaredField.name
-                        , declaredField.type.simpleName)
+                        , declaredField.type.kotlin.javaObjectType.simpleName)
                 return false
             }
         }
@@ -142,7 +143,7 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
      */
     private fun injection(data: Any, declaredField: Field, value: String) {
         declaredField.isAccessible = true
-        when (DataType.formatClass(declaredField.type)) {
+        when (DataType.formatClass(declaredField.type.kotlin.javaObjectType.kotlin.javaObjectType)) {
             BYTE -> {
                 logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", value, "Byte", declaredField.name)
                 declaredField.setByte(data, value.toByte())
@@ -181,17 +182,17 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
                 logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", formatData, "String", declaredField.name)
                 declaredField.set(data, formatData)
             }
-            else -> throw RuntimeException("字段不是已知可用的数据类型 ${declaredField.type.simpleName}，无法注入")
+            else -> throw RuntimeException("字段不是已知可用的数据类型 ${declaredField.type.kotlin.javaObjectType.simpleName}，无法注入")
         }
 
     }
 
     private val simpleFormat: (String, List<String>) -> String = { doc: String, alias: List<String> ->
         val result = StringBuilder()
-        for ((i,v) in alias.withIndex()) {
-            if (i == 0){
+        for ((i, v) in alias.withIndex()) {
+            if (i == 0) {
                 result.append("\t").append(v).append("\t\t").append(doc)
-            }else{
+            } else {
                 result.append("\t").append(v)
             }
             result.append("\r\n")

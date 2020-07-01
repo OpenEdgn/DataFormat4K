@@ -11,8 +11,8 @@ class Test {
     private val logger  = LoggerFactory.getLogger(javaClass)
     @Test
     fun test() {
-        val argsFormat = ArgsFormat(Config2::class,Config3::class)
-        argsFormat.loadArgs(arrayOf("-l","%{user.dir}/etc/profile"))
+        val argsFormat = ArgsFormat(Config2::class)
+        argsFormat.loadArgs(arrayOf("-l","%{user.dir}/etc/profile","-d"))
         println(argsFormat.getBeanByType(Config2::class).toString())
         println(argsFormat.printHelp())
     }
@@ -20,11 +20,16 @@ class Test {
 
     data class Config2(
             @ArgsApis(
-                    ArgApi("zh_CN","我不知道")
+                    ArgApi("zh_CN","指定配置文件的地址")
             )
             @ArgsField("-l","--log")
-            var logPath:String = "")
-    data class Config3(
-            @ArgsField("-l","--log")
-            var logPath:String = "")
+            var logPath:String = "",
+            @ArgsApis(
+                    ArgApi("zh_CN","指定启动的用户")
+            )
+            @ArgsField("-u","--user")
+            var userName:String = "",
+            @ArgsField("-d","--debug")
+            val debug:Boolean = false
+    )
 }
