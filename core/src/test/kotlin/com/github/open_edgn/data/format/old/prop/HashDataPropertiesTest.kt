@@ -1,6 +1,6 @@
 package com.github.open_edgn.data.format.old.prop
 
-import com.github.open_edgn.data.format.io.BHashDataProperties
+import com.github.open_edgn.data.format.io.HashDataProperties
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,8 +17,8 @@ internal class HashDataPropertiesTest {
     fun tearDown() {
     }
 
-    private fun getEmptyHashDataProperties(): BHashDataProperties {
-        return BHashDataProperties()
+    private fun getEmptyHashDataProperties(): HashDataProperties {
+        return HashDataProperties()
     }
 
     @Test

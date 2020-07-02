@@ -1,6 +1,7 @@
 package com.github.open_edgn.data.format.io
 
 import com.github.open_edgn.data.format.old.factory.DataSerializableFactory
+import com.github.open_edgn.data.format.old.factory.StringFormatFactory
 import com.github.open_edgn.data.format.utils.StringFormatUtils
 import java.io.Reader
 import java.io.Writer
@@ -9,24 +10,24 @@ import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 class HashDataProperties : BaseDataProperties() {
-    private val hashMap = HashMap<String, String>()
+    private val container = HashMap<String, String>()
     private val readWriteLock = ReentrantReadWriteLock()
     private val readLock = readWriteLock.readLock()
     private val writeLock = readWriteLock.writeLock()
 
     override fun toString(): String {
-        return hashMap.toString()
+        return container.toString()
     }
 
     override fun hashCode(): Int {
-        return hashMap.hashCode()
+        return container.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as HashDataProperties
-        if (hashMap != other.hashMap) return false
+        if (container != other.container) return false
         return true
     }
 
@@ -43,13 +44,13 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun exportData(writer: Writer): Int {
         return readLock.lock {
-            DataSerializableFactory.defaultFactory.output(hashMap, writer)
+            DataSerializableFactory.defaultFactory.output(container, writer)
         }
     }
 
     override fun getByte(key: String): Byte? {
         return readLock.lockNullResult {
-            val value = hashMap[key]
+            val value = container[key]
             if (value == null) {
                 null
             } else {
@@ -61,7 +62,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun getInt(key: String): Int? {
         return readLock.lockNullResult {
-            val value = hashMap[key]
+            val value = container[key]
             if (value == null) {
                 null
             } else {
@@ -72,7 +73,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun getLong(key: String): Long? {
         return readLock.lockNullResult {
-            val value = hashMap[key]
+            val value = container[key]
             if (value == null) {
                 null
             } else {
@@ -83,7 +84,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun getFloat(key: String): Float? {
         return readLock.lockNullResult {
-            val value = hashMap[key]
+            val value = container[key]
             if (value == null) {
                 null
             } else {
@@ -94,7 +95,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun getShort(key: String): Short? {
         return readLock.lockNullResult {
-            val value = hashMap[key]
+            val value = container[key]
             if (value == null) {
                 null
             } else {
@@ -105,7 +106,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun getDouble(key: String): Double? {
         return readLock.lockNullResult {
-            val value = hashMap[key]
+            val value = container[key]
             if (value == null) {
                 null
             } else {
@@ -116,7 +117,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun getChar(key: String): Char? {
         return readLock.lockNullResult {
-            val value = hashMap[key]
+            val value = container[key]
             if (value == null) {
                 null
             } else {
@@ -127,18 +128,33 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun getString(key: String): String? {
         return readLock.lockNullResult {
-            val value = hashMap[key]
+            val value = container[key]
             if (value == null) {
                 null
             } else {
-                StringFormatUtils.parse(value, String::class)
+                formatString(StringFormatUtils.parse(value, String::class))
             }
         }
     }
 
+
+
+    override fun getStringOrDefault(key: String, defaultValue: String): String {
+        readLock.lock {
+            return formatString(super.getStringOrDefault(key, defaultValue))
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun formatString(source: String): String {
+        val result = StringFormatFactory.defaultValue.fill(source, container, false)
+        return StringFormatFactory.defaultValue.fill(result, System.getProperties() as Map<String, String>, false)
+    }
+
+
     override fun getBoolean(key: String): Boolean? {
         return readLock.lockNullResult {
-            val value = hashMap[key]
+            val value = container[key]
             if (value == null) {
                 null
             } else {
@@ -148,12 +164,12 @@ class HashDataProperties : BaseDataProperties() {
     }
 
     override val length: Int
-        get() = hashMap.size
+        get() = container.size
 
     override fun remove(key: String): Int {
         return writeLock.lock {
-            if (hashMap.containsKey(key)) {
-                hashMap.remove(key)
+            if (container.containsKey(key)) {
+                container.remove(key)
                 1
             } else {
                 0
@@ -163,31 +179,32 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun removeAll(): Int {
         return writeLock.lock {
-            val size = hashMap.size
-            hashMap.clear()
+            val size = container.size
+            container.clear()
             size
         }
     }
 
     override fun <T> set(key: String, value: T): Boolean {
         return writeLock.lock {
-            hashMap[key] = StringFormatUtils.format(value as Any)
+            logger.debug("INSERT KEY,VALUE VALUE({},{});",key,value)
+            container[key] = StringFormatUtils.format(value as Any)
             true
         }
     }
 
     override fun containsKey(key: String): Boolean {
         return readLock.lock {
-            hashMap.containsKey(key)
+            container.containsKey(key)
         }
     }
 
     override fun replace(key: String, value: Any): Boolean {
         return writeLock.lock {
-            if (hashMap.containsKey(key).not()) {
+            if (container.containsKey(key).not()) {
                 false
             } else {
-                hashMap.remove(key)
+                container.remove(key)
                 set(key, value)
             }
         }

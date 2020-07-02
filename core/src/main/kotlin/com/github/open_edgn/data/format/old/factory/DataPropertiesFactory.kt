@@ -1,6 +1,6 @@
 package com.github.open_edgn.data.format.old.factory
 
-import com.github.open_edgn.data.format.io.BHashDataProperties
+import com.github.open_edgn.data.format.io.HashDataProperties
 import com.github.open_edgn.data.format.io.IDataProperties
 
 interface DataPropertiesFactory {
@@ -20,7 +20,7 @@ interface DataPropertiesFactory {
 
     }
     class SimpleDataPropertiesFactory: DataPropertiesFactory {
-        override fun createEmptyProperties(): IDataProperties = BHashDataProperties()
+        override fun createEmptyProperties(): IDataProperties = HashDataProperties()
 
 
     }
