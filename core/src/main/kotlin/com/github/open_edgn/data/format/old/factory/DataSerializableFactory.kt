@@ -1,12 +1,8 @@
 package com.github.open_edgn.data.format.old.factory
 
 import com.github.open_edgn.data.format.old.data.DataItem
-import com.github.open_edgn.data.format.old.enums.DataType
 import org.slf4j.LoggerFactory
 import java.io.*
-import java.lang.Exception
-import java.lang.NullPointerException
-import java.net.URLDecoder
 
 
 /**
@@ -19,7 +15,7 @@ interface DataSerializableFactory {
      * @param container Function2<String, PropData, Unit> 放入的容器 （非线程安全）
      * @return Long 格式化后的数目
      */
-    fun input(reader: Reader, container: (String, DataItem) -> Unit): Int
+    fun input(reader: Reader, container: (String, String) -> Unit): Int
 
     /**
      * 将容器下的数据序列化输出到 write 下
@@ -37,7 +33,7 @@ interface DataSerializableFactory {
 
     class SimpleDataSerializableFactory : DataSerializableFactory {
         private val logger = LoggerFactory.getLogger(javaClass)
-        override fun input(reader: Reader, container: (String, DataItem) -> Unit): Int {
+        override fun input(reader: Reader, container: (String, String) -> Unit): Int {
             TODO("Not yet implemented")
         }
 

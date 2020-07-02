@@ -1,7 +1,7 @@
 package com.github.open_edgn.data.format.io
 
 import com.github.open_edgn.data.format.old.factory.DataSerializableFactory
-import com.github.open_edgn.data.format.old.factory.StringFormatFactory
+import com.github.open_edgn.data.format.utils.StringFillUtils
 import com.github.open_edgn.data.format.utils.StringFormatUtils
 import java.io.Reader
 import java.io.Writer
@@ -138,17 +138,10 @@ class HashDataProperties : BaseDataProperties() {
     }
 
 
-
     override fun getStringOrDefault(key: String, defaultValue: String): String {
         readLock.lock {
             return formatString(super.getStringOrDefault(key, defaultValue))
         }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun formatString(source: String): String {
-        val result = StringFormatFactory.defaultValue.fill(source, container, false)
-        return StringFormatFactory.defaultValue.fill(result, System.getProperties() as Map<String, String>, false)
     }
 
 
@@ -187,7 +180,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun <T> set(key: String, value: T): Boolean {
         return writeLock.lock {
-            logger.debug("INSERT KEY,VALUE VALUE({},{});",key,value)
+            logger.debug("INSERT KEY,VALUE VALUE({},{});", key, value)
             container[key] = StringFormatUtils.format(value as Any)
             true
         }
@@ -212,7 +205,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun putByte(key: String, value: Byte): IDataProperties {
         writeLock.lock {
-            set(key,value)
+            set(key, value)
         }
         return this
     }
@@ -264,5 +257,12 @@ class HashDataProperties : BaseDataProperties() {
         }
         return result
     }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun formatString(source: String): String {
+        val result = StringFillUtils.fill(source, container)
+        return StringFillUtils.fill(result, System.getProperties() as Map<String, Any>)
+    }
+
 
 }
