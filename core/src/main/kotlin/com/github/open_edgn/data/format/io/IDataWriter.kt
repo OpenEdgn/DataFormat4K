@@ -6,16 +6,16 @@ interface IDataWriter : Serializable {
     /**
      * 根据键值来删除数据
      * @param key String 键值
-     * @return Long 删除的数目个数
+     * @return Int 删除的数目个数
      */
 
-    fun remove(key: String): Long
+    fun remove(key: String): Int
 
     /**
      * 删除所有数据
-     * @return Long 删除的数目个数
+     * @return Int 删除的数目个数
      */
-    fun removeAll(): Long
+    fun removeAll(): Int
 
 
     /**
