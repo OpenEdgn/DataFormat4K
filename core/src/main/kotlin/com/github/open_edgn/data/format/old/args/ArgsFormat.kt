@@ -3,7 +3,7 @@ package com.github.open_edgn.data.format.old.args
 import com.github.open_edgn.data.format.old.data.DataItem
 import com.github.open_edgn.data.format.old.enums.DataType
 import com.github.open_edgn.data.format.old.enums.DataType.*
-import com.github.open_edgn.data.format.old.factory.StringFormatFactory
+import com.github.open_edgn.data.format.utils.StringFillUtils
 import org.slf4j.LoggerFactory
 import java.lang.Exception
 import java.lang.RuntimeException
@@ -178,7 +178,7 @@ class ArgsFormat(vararg formatClasses: KClass<*>) {
                 declaredField.setChar(data, value[0])
             }
             STRING -> {
-                val formatData = StringFormatFactory.defaultValue.fill(value, systemItem, false)
+                val formatData =StringFillUtils.fill(value, systemItem)
                 logger.debug("将数据 [{}] 注入到类型为 {} 的字段[{}]中.", formatData, "String", declaredField.name)
                 declaredField.set(data, formatData)
             }
