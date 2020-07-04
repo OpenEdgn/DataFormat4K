@@ -12,6 +12,10 @@ object StringFillUtils {
     private val spit = Regex("(^%\\{|}$)")
     private val pattern = Pattern.compile(regex.pattern)
 
+    @Suppress("UNCHECKED_CAST")
+    fun fillFormSystemProp(source: String): String {
+        return fill(fill(source, System.getProperties() as Map<String, String>), System.getenv())
+    }
 
     /**
      * 将原始字符串下所有符合规则的占位符替换

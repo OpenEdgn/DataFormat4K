@@ -1,8 +1,9 @@
-package com.github.open_edgn.data.format.old.factory
+package com.github.open_edgn.data.format.io
 
-import com.github.open_edgn.data.format.old.data.DataItem
-import org.slf4j.LoggerFactory
-import java.io.*
+import java.io.PrintWriter
+import java.io.Reader
+import java.io.Writer
+import java.util.*
 
 
 /**
@@ -32,15 +33,37 @@ interface DataSerializableFactory {
     }
 
     class SimpleDataSerializableFactory : DataSerializableFactory {
-        private val logger = LoggerFactory.getLogger(javaClass)
         override fun input(reader: Reader, container: (String, String) -> Unit): Int {
-            TODO("Not yet implemented")
+            val properties = Properties()
+            properties.load(reader)
+            var len = 0
+            properties.forEach { t, u ->
+                len++
+                container(t.toString(), u.toString())
+            }
+            return len
         }
 
         override fun output(container: Map<String, String>, writer: Writer): Int {
-            TODO("Not yet implemented")
+            val printWriter = PrintWriter(writer.toString())
+            var len = 0
+            container.forEach { (k, v) ->
+                len++
+                printWriter.println("${char2Unicode(k)}=${char2Unicode(v)}")
+            }
+            return len
         }
 
-
+        private fun char2Unicode(k: String): String {
+            val unicode = StringBuffer()
+            for (c in k) {
+                if (c.isLetterOrDigit() || c.isJavaIdentifierStart()) {
+                    unicode.append(c)
+                } else {
+                    unicode.append("\\u").append(c.toLong().toString(16))
+                }
+            }
+            return unicode.toString()
+        }
     }
 }

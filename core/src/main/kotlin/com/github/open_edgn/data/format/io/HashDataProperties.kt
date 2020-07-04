@@ -1,6 +1,5 @@
 package com.github.open_edgn.data.format.io
 
-import com.github.open_edgn.data.format.old.factory.DataSerializableFactory
 import com.github.open_edgn.data.format.utils.StringFillUtils
 import com.github.open_edgn.data.format.utils.StringFormatUtils
 import java.io.Reader
@@ -9,7 +8,10 @@ import java.util.HashMap
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
-class HashDataProperties : BaseDataProperties() {
+/**
+ *  基于 HashMap 的多字段类型的数据包装类
+ */
+class HashDataProperties(private val formatString: Boolean = true) : BaseDataProperties() {
     private val container = HashMap<String, String>()
     private val readWriteLock = ReentrantReadWriteLock()
     private val readLock = readWriteLock.readLock()
@@ -180,7 +182,7 @@ class HashDataProperties : BaseDataProperties() {
 
     override fun <T> set(key: String, value: T): Boolean {
         return writeLock.lock {
-            logger.debug("INSERT KEY,VALUE VALUE({},{});", key, value)
+            logger.debug("添加数据(K=\'{}\',V=\'{}\');", key, value)
             container[key] = StringFormatUtils.format(value as Any)
             true
         }
@@ -258,10 +260,12 @@ class HashDataProperties : BaseDataProperties() {
         return result
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun formatString(source: String): String {
+        if (!formatString) {
+            return source
+        }
         val result = StringFillUtils.fill(source, container)
-        return StringFillUtils.fill(result, System.getProperties() as Map<String, Any>)
+        return StringFillUtils.fillFormSystemProp(result)
     }
 
 

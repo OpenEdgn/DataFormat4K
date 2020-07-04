@@ -1,5 +1,6 @@
 package com.github.open_edgn.data.format.old.prop
 
+import com.github.open_edgn.data.format.emptyDataProperties
 import com.github.open_edgn.data.format.old.args.ArgApi
 import com.github.open_edgn.data.format.old.args.ArgsApis
 import com.github.open_edgn.data.format.old.args.ArgsField
@@ -11,6 +12,10 @@ class Test {
     private val logger  = LoggerFactory.getLogger(javaClass)
     @Test
     fun test() {
+        val dataProperties = emptyDataProperties()
+        dataProperties.putString("test.key","Java home : %{JAVA_HOME}")
+        println(dataProperties.getString("test.key"))
+        if (true) return
         val argsFormat = ArgsFormat(Config2::class)
         argsFormat.loadArgs(arrayOf("-l","%{user.dir}/etc/profile","-d"))
         println(argsFormat.getBeanByType(Config2::class).toString())
