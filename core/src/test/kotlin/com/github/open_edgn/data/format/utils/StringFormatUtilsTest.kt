@@ -1,5 +1,6 @@
 package com.github.open_edgn.data.format.utils
 
+import com.github.open_edgn.data.format.FormatErrorException
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

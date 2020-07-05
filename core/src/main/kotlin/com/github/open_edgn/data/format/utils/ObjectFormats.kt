@@ -1,5 +1,6 @@
 package com.github.open_edgn.data.format.utils
 
+import com.github.open_edgn.data.format.FormatErrorException
 import java.io.File
 
 class ByteObjectFormat : IObjectFormat<Byte> {

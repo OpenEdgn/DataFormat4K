@@ -1,5 +1,7 @@
 package com.github.open_edgn.data.format.utils
 
+import com.github.open_edgn.data.format.FormatErrorException
+import com.github.open_edgn.data.format.NotFoundException
 import kotlin.reflect.KClass
 
 
