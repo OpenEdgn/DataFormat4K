@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 /**
  *  基于 HashMap 的多字段类型的数据包装类
  */
+@Suppress("DuplicatedCode")
 class HashDataProperties(private val formatString: Boolean = true) : BaseDataProperties() {
     private val container = HashMap<String, String>()
     private val readWriteLock = ReentrantReadWriteLock()
