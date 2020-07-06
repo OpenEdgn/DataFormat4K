@@ -49,14 +49,14 @@ object StringFormatUtils {
     /**
      * 扩展方法，具体查看 `#parse(String,Class)`
      */
-    fun <T : Any> parse(source: String, clazz: KClass<T>): T {
-        return parse(source, clazz.javaObjectType)
+    fun <T : Any> parse(source: String, clazz: KClass<T>,fillSystemProp:Boolean = false): T {
+        return parse(source, clazz.javaObjectType,fillSystemProp)
     }
 
     /**
      *  将字符串格式化成对应的数据
      *
-     * @param source String  原始的字符串数据
+     * @param sourceData String  原始的字符串数据
      * @param clazz Class<T> 想要转换的对象
      * @return T 得到的对象
      * @throws FormatErrorException 解析识别，原始的字符串存在错误导致无法解析
@@ -64,7 +64,12 @@ object StringFormatUtils {
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(FormatErrorException::class, NotFoundException::class)
-    fun <T : Any> parse(source: String, clazz: Class<T>): T {
+    fun <T : Any> parse(source: String, clazz: Class<T>, fillSystemProp:Boolean = false): T {
+        val sourceData = if (fillSystemProp){
+            StringFillUtils.fillFormSystemProp(source)
+        }else{
+            source
+        }
         var parse = formatMap[clazz]
         if (parse == null) {
             for (key in formatMap.keys) {
@@ -78,7 +83,7 @@ object StringFormatUtils {
             throw NotFoundException("无法找到解析 [ ${clazz.simpleName} ] 的方案.")
         } else {
             return try {
-                parse.parse(source) as T
+                parse.parse(sourceData) as T
             } catch (e: Throwable) {
                 throw FormatErrorException(e.message, e)
             }

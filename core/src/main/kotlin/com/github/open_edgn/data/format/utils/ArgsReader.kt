@@ -11,6 +11,8 @@ import kotlin.reflect.jvm.*
 
 
 class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
+    private val map = HashMap<String, Any>()
+
     init {
         for (bean in argsBeans) {
             load(bean, args)
@@ -19,7 +21,6 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val map = HashMap<String, Any>()
 
     private fun load(bean: KClass<*>, args: Array<String>) {
         val properties = bean.declaredMemberProperties.toList()
@@ -45,7 +46,7 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
         }
         if (bean.isData) {
             map[bean.jvmName] =
-                    bean.constructors.toList()[0].javaConstructor!!.newInstance(*result)
+            bean.javaObjectType.declaredConstructors[0].newInstance(*result)
         } else {
             val any = bean.createInstance()
             for ((index, property) in properties.withIndex()) {
@@ -91,7 +92,7 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
         val argsLength = args.size
         for ((index, value) in args.withIndex()) {
             if (value == alias) {
-                return if (argsLength >= index) {
+                return if (index >= argsLength) {
                     if (type.javaObjectType == Boolean::class.javaObjectType) {
                         true
                     } else {
@@ -102,12 +103,12 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
                     if (type.javaObjectType == Boolean::class.javaObjectType) {
                         nextItem.toUpperCase().trim() != "FALSE"
                     } else {
-                        StringFormatUtils.parse(nextItem, type)
+                        StringFormatUtils.parse(nextItem, type,true)
                     }
                 }
             }
         }
-        return StringFormatUtils.parse(defaultValue, type)
+        return StringFormatUtils.parse(defaultValue, type,true)
     }
 }
 
