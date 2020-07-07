@@ -1,26 +1,35 @@
 package com.github.open_edgn.data.format.utils
 
 import com.github.open_edgn.data.format.ArgsItem
+import com.github.open_edgn.data.format.Beta
 import com.github.open_edgn.data.format.FormatErrorException
 import org.slf4j.LoggerFactory
+import java.lang.RuntimeException
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.*
 
-
-class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
+/**
+ * 解析 main 方法下的 Args 方案
+ *
+ * @param args Array<String> 代表Main 方法传入的启动附加参数
+ * @param argsBeans  Array<KClass> 代表被注入的容器
+ *
+ */
+@Beta
+class ArgsReader (args: Array<String>, vararg argsBeans: KClass<*>) {
     private val map = HashMap<String, Any>()
 
     init {
         for (bean in argsBeans) {
+            if (bean.java.isInterface) {
+                throw RuntimeException("无法实例化接口")
+            }
             load(bean, args)
         }
     }
-
-    private val logger = LoggerFactory.getLogger(javaClass)
-
 
     private fun load(bean: KClass<*>, args: Array<String>) {
         val properties = bean.declaredMemberProperties.toList()
@@ -57,8 +66,14 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
         }
     }
 
+    /**
+     * 得到 args 的实例化注入的对象
+     *
+     * @param kClass KClass<T> 对象 Class
+     * @return T 实例化的对象
+     */
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getArgsType(kClass: KClass<T>): T {
+    fun <T : Any> getArgsBean(kClass: KClass<T>): T {
         val result = map[kClass.jvmName]
         if (result == null) {
             throw NullPointerException("未找到 ${kClass.jvmName} 的实例化对象.")
