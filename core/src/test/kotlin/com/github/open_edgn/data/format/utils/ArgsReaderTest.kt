@@ -14,7 +14,7 @@ internal class ArgsReaderTest {
         assertEquals(message.config, StringFillUtils.fillFormSystemProp("%{user.home}"))
         assertEquals(message.configPath.absolutePath, StringFillUtils.fillFormSystemProp("%{user.dir}"))
         val argsBean = argsReader.getArgsBean(Data::class)
-        assertEquals(argsBean.logger.absolutePath,StringFillUtils.fillFormSystemProp("%{JAVA_HOME}"))
+        assertEquals(argsBean.logger.absolutePath,StringFillUtils.fillFormSystemProp("%{user.dir}"))
 
     }
 
@@ -28,7 +28,7 @@ internal class ArgsReaderTest {
     )
 
     class Data {
-        @ArgsItem("%{JAVA_HOME}")
+        @ArgsItem("%{user.dir}")
         lateinit var logger: File
         override fun toString(): String {
             return "Data(logger='$logger')"
