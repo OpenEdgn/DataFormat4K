@@ -3,6 +3,7 @@ package com.github.open_edgn.data.format.utils
 import com.github.open_edgn.data.format.ArgsItem
 import com.github.open_edgn.data.format.Beta
 import com.github.open_edgn.data.format.FormatErrorException
+import com.github.open_edgn.data.format.Ignore
 import org.slf4j.LoggerFactory
 import java.lang.RuntimeException
 import kotlin.reflect.KClass
@@ -19,8 +20,9 @@ import kotlin.reflect.jvm.*
  *
  */
 @Beta
-class ArgsReader (args: Array<String>, vararg argsBeans: KClass<*>) {
+class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
     private val map = HashMap<String, Any>()
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     init {
         for (bean in argsBeans) {
@@ -35,6 +37,10 @@ class ArgsReader (args: Array<String>, vararg argsBeans: KClass<*>) {
         val properties = bean.declaredMemberProperties.toList()
         val result = Array<Any?>(properties.size) { null }
         for ((index, property) in properties.withIndex()) {
+            if (property.findAnnotation<Ignore>() != null) {
+                logger.debug("忽略字段 {}.", property.name)
+                continue
+            }
             val argsItem = property.findAnnotation<ArgsItem>()
             try {
                 if (argsItem != null) {
@@ -42,9 +48,16 @@ class ArgsReader (args: Array<String>, vararg argsBeans: KClass<*>) {
                     if (alias.isEmpty()) {
                         alias.add(property.name)
                     }
+                    if (argsItem.defaultValue.isNotEmpty()) {
+
+                        logger.debug("字段 {} 指定默认值为 {},在不存在可注入的数据时将使用此默认值.", property.name, argsItem.defaultValue)
+                    } else {
+                        logger.debug("字段 {} 不存在默认值.", property.name)
+                    }
                     injection(result, index, property.returnType.jvmErasure, args, alias, argsItem.defaultValue)
                 } else {
-                    injection(result, index, property.returnType.jvmErasure, args, listOf(property.name), "")
+                    logger.debug("字段 {} 不存在默认值.", property.name)
+                    injection(result, index, property.returnType.jvmErasure, args, listOf(property.name), null)
                 }
             } catch (e: Exception) {
                 throw FormatErrorException("解析 Arg 时出现错误！[${e.message}]", e)
@@ -55,7 +68,7 @@ class ArgsReader (args: Array<String>, vararg argsBeans: KClass<*>) {
         }
         if (bean.isData) {
             map[bean.jvmName] =
-            bean.javaObjectType.declaredConstructors[0].newInstance(*result)
+                    bean.javaObjectType.declaredConstructors[0].newInstance(*result)
         } else {
             val any = bean.createInstance()
             for ((index, property) in properties.withIndex()) {
@@ -87,23 +100,33 @@ class ArgsReader (args: Array<String>, vararg argsBeans: KClass<*>) {
                           type: KClass<*>,
                           args: Array<String>,
                           alias: List<String>,
-                          defaultValue: String) {
+                          defaultValue: String?) {
         for (item in alias) {
-            result[index] = when {
+            val data = when {
                 item.length == 1 -> {
-                    loadItem(args, "-$item", type, defaultValue)
+                    loadItem(args, "-$item", type)
                 }
                 item.length > 1 -> {
-                    loadItem(args, "--$item", type, defaultValue)
+                    loadItem(args, "--$item", type)
                 }
                 else -> {
                     throw IndexOutOfBoundsException("alias 长度为 0 .")
                 }
             }
+            if (data != null) {
+                result[index] = data
+                return
+            }
+        }
+
+        if (defaultValue == null || defaultValue.isEmpty()) {
+            throw FormatErrorException("未发现 Args 下存在可注入的数据且默认值.")
+        } else {
+            result[index] = StringFormatUtils.parse(defaultValue, type, true)
         }
     }
 
-    private fun loadItem(args: Array<String>, alias: String, type: KClass<*>, defaultValue: String): Any? {
+    private fun loadItem(args: Array<String>, alias: String, type: KClass<*>): Any? {
         val argsLength = args.size
         for ((index, value) in args.withIndex()) {
             if (value == alias) {
@@ -112,18 +135,19 @@ class ArgsReader (args: Array<String>, vararg argsBeans: KClass<*>) {
                         true
                     } else {
                         break
+                        // 返回指定字段的默认数值
                     }
                 } else {
                     val nextItem = args[index + 1]
                     if (type.javaObjectType == Boolean::class.javaObjectType) {
                         nextItem.toUpperCase().trim() != "FALSE"
                     } else {
-                        StringFormatUtils.parse(nextItem, type,true)
+                        StringFormatUtils.parse(nextItem, type, true)
                     }
                 }
             }
         }
-        return StringFormatUtils.parse(defaultValue, type,true)
+        return null
     }
 }
 

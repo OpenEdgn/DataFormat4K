@@ -30,10 +30,24 @@ internal class ArgsReaderTest {
     class Data {
         @ArgsItem("%{user.dir}")
         lateinit var logger: File
-        override fun toString(): String {
-            return "Data(logger='$logger')"
-        }
+    }
 
+    @Test
+    fun testSecond() {
+        val test2 = ArgsReader(
+                arrayOf("--work-dir","data/app", "-d", "--skip-args"),
+                Test2::class
+
+        ).getArgsBean(Test2::class)
+        assertEquals(File("data/app"),test2.cfgPath)
+        assertEquals(true,test2.debug)
+
+    }
+    class Test2{
+        @ArgsItem(alias = ["work-dir","w"],defaultValue = "/bat/dir")
+        lateinit var cfgPath:File
+        @ArgsItem(alias = ["d"])
+        var debug:Boolean = false
 
     }
 }
