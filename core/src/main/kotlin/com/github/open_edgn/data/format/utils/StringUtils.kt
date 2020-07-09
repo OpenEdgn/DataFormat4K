@@ -1,7 +1,6 @@
 package com.github.open_edgn.data.format.utils
 
-import java.io.InputStream
-import java.io.Reader
+import java.io.*
 import java.nio.charset.Charset
 
 
@@ -12,9 +11,9 @@ object StringUtils {
     /**
      * 读取 InputStream 下的所有字符串
      *
-     * @param inputStream InputStream
-     * @param charset Charset
-     * @return String
+     * @param inputStream InputStream 原始流
+     * @param charset Charset 字符串编码类型
+     * @return String 读取到的全部字符串
      */
     fun readText(inputStream: InputStream, charset: Charset = Charsets.UTF_8): String {
         val result = StringBuilder()
@@ -30,17 +29,48 @@ object StringUtils {
         return result.toString()
     }
 
+    /**
+     * 从 Reader 读取全部字符串
+     * @param reader Reader 原始 Reader 流
+     * @return String 读取到的全部字符串
+     */
     fun readText(reader: Reader): String {
         return reader.readText()
     }
 
+    /**
+     * 测试字符串是否为 NULL 或者为空的
+     * @param data CharSequence? 字符串
+     * @return Boolean 结果
+     */
     fun checkNullOrEmpty(data: CharSequence?): Boolean {
-        val d = data?:return false
+        val d = data?:return true
         return d.isEmpty()
     }
 
+    /**
+     * 测试字符串是否为 NULL 或者为空白字符
+     * @param data CharSequence? 字符串
+     * @return Boolean 结果
+     */
     fun checkNullOrBlank(data: CharSequence?): Boolean {
-        val d = data?:return false
+        val d = data?:return true
         return d.isBlank()
+    }
+
+    /**
+     * 对抛出的异常信息全部捕获
+     * @param throws Throwable 异常信息
+     * @return String 捕获的日志
+     */
+    fun throwableFormat(throws: Throwable): String {
+        val outputStream = ByteArrayOutputStream()
+        val printWriter = PrintWriter(OutputStreamWriter(outputStream, Charsets.UTF_8), true)
+        throws.printStackTrace(printWriter)
+        printWriter.flush()
+        val array = outputStream.toByteArray()
+        printWriter.close()
+        outputStream.close()
+        return array.toString(Charsets.UTF_8).trim()
     }
 }
