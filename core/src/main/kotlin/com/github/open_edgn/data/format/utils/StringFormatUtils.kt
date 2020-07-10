@@ -56,7 +56,7 @@ object StringFormatUtils {
     /**
      *  将字符串格式化成对应的数据
      *
-     * @param sourceData String  原始的字符串数据
+     * @param source String  原始的字符串数据
      * @param clazz Class<T> 想要转换的对象
      * @return T 得到的对象
      * @throws FormatErrorException 解析识别，原始的字符串存在错误导致无法解析
@@ -66,7 +66,7 @@ object StringFormatUtils {
     @Throws(FormatErrorException::class, NotFoundException::class)
     fun <T : Any> parse(source: String, clazz: Class<T>, fillSystemProp:Boolean = false): T {
         val sourceData = if (fillSystemProp){
-            StringFillUtils.fillFormSystemProp(source)
+            StringFillUtils.fillFromSystemProp(source)
         }else{
             source
         }

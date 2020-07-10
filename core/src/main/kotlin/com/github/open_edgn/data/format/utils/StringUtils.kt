@@ -38,13 +38,14 @@ object StringUtils {
         return reader.readText()
     }
 
+
     /**
      * 测试字符串是否为 NULL 或者为空的
      * @param data CharSequence? 字符串
      * @return Boolean 结果
      */
-    fun checkNullOrEmpty(data: CharSequence?): Boolean {
-        val d = data?:return true
+    fun isNullOrEmpty(data: CharSequence?): Boolean {
+        val d = data ?: return true
         return d.isEmpty()
     }
 
@@ -53,8 +54,8 @@ object StringUtils {
      * @param data CharSequence? 字符串
      * @return Boolean 结果
      */
-    fun checkNullOrBlank(data: CharSequence?): Boolean {
-        val d = data?:return true
+    fun isNullOrBlank(data: CharSequence?): Boolean {
+        val d = data ?: return true
         return d.isBlank()
     }
 

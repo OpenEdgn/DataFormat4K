@@ -1,6 +1,5 @@
 package com.github.open_edgn.data.format.utils
 
-import java.lang.StringBuilder
 import java.util.regex.Pattern
 
 /**
@@ -13,7 +12,7 @@ object StringFillUtils {
     private val pattern = Pattern.compile(regex.pattern)
 
     @Suppress("UNCHECKED_CAST")
-    fun fillFormSystemProp(source: String): String {
+    fun fillFromSystemProp(source: String): String {
         return fill(fill(source, System.getProperties() as Map<String, String>), System.getenv())
     }
 

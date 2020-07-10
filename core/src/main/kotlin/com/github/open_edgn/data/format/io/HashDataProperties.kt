@@ -4,7 +4,7 @@ import com.github.open_edgn.data.format.utils.StringFillUtils
 import com.github.open_edgn.data.format.utils.StringFormatUtils
 import java.io.Reader
 import java.io.Writer
-import java.util.HashMap
+import java.util.*
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -266,7 +266,7 @@ class HashDataProperties(private val formatString: Boolean = true) : BaseDataPro
             return source
         }
         val result = StringFillUtils.fill(source, container)
-        return StringFillUtils.fillFormSystemProp(result)
+        return StringFillUtils.fillFromSystemProp(result)
     }
 
 

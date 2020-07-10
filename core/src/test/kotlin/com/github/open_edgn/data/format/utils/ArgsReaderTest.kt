@@ -1,20 +1,19 @@
 package com.github.open_edgn.data.format.utils
 
 import com.github.open_edgn.data.format.ArgsItem
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.File
-
-import org.junit.jupiter.api.Assertions.*
 
 internal class ArgsReaderTest {
     @Test
     fun test() {
         val argsReader = ArgsReader(arrayOf("--config", "%{user.home}"), ArgsLoader::class, Data::class)
         val message = argsReader.getArgsBean(ArgsLoader::class)
-        assertEquals(message.config, StringFillUtils.fillFormSystemProp("%{user.home}"))
-        assertEquals(message.configPath.absolutePath, StringFillUtils.fillFormSystemProp("%{user.dir}"))
+        assertEquals(message.config, StringFillUtils.fillFromSystemProp("%{user.home}"))
+        assertEquals(message.configPath.absolutePath, StringFillUtils.fillFromSystemProp("%{user.dir}"))
         val argsBean = argsReader.getArgsBean(Data::class)
-        assertEquals(argsBean.logger.absolutePath,StringFillUtils.fillFormSystemProp("%{user.dir}"))
+        assertEquals(argsBean.logger.absolutePath, StringFillUtils.fillFromSystemProp("%{user.dir}"))
 
     }
 
