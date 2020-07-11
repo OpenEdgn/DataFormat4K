@@ -50,11 +50,11 @@ internal class ArgsReaderTest {
     )
 
     @Test
-    fun test3(): Unit {
+    fun test3() {
         val argsBean = ArgsReader(
-                arrayOf("--work-dir", "%{APPDATA}/PluginManager", " -d"),
+                arrayOf("--work-dir", "%{APPDATA}/PluginManager", "-d"),
                 PluginManagerProperty::class).getArgsBean(PluginManagerProperty::class)
-        println(argsBean)
+        assertEquals(argsBean.debug, true)
     }
 
     data class PluginManagerProperty(
