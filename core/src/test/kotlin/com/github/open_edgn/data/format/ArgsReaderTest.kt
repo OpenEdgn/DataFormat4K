@@ -33,19 +33,40 @@ internal class ArgsReaderTest {
     @Test
     fun testSecond() {
         val test2 = ArgsReader(
-                arrayOf("--work-dir", "data/app", "-d", "--skip-args"),
+                arrayOf("--work-dir", "data/app", "-d", "--skip-args", "--debug"),
                 Test2::class
 
         ).getArgsBean(Test2::class)
-        assertEquals(File("data/app"),test2.cfgPath)
-        assertEquals(true,test2.debug)
+        assertEquals(File("data/app"), test2.cfgPath)
+        assertEquals(true, test2.debug)
 
     }
-    class Test2{
-        @ArgsItem(alias = ["work-dir","w"],defaultValue = "/bat/dir")
-        lateinit var cfgPath:File
-        @ArgsItem(alias = ["d"])
-        var debug:Boolean = false
 
+    data class Test2(
+            @ArgsItem(alias = ["work-dir", "w"], defaultValue = "/bat/dir")
+            var cfgPath: File,
+            @ArgsItem(alias = ["d", "debug"], defaultValue = "false")
+            var debug: Boolean
+    )
+
+    @Test
+    fun test3(): Unit {
+        val argsBean = ArgsReader(
+                arrayOf("--work-dir", "%{APPDATA}/PluginManager", " -d"),
+                PluginManagerProperty::class).getArgsBean(PluginManagerProperty::class)
+        println(argsBean)
     }
+
+    data class PluginManagerProperty(
+            /**
+             * 工作目录
+             */
+            @ArgsItem(defaultValue = "%{user.dir}/Workspace", alias = ["work-dir"])
+            var workDirectory: File,
+            /**
+             * 开启debug 模式
+             */
+            @ArgsItem(defaultValue = "false", alias = ["debug", "d"])
+            val debug: Boolean
+    )
 }

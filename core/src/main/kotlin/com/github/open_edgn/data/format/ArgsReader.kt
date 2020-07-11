@@ -1,6 +1,7 @@
 package com.github.open_edgn.data.format
 
 import org.slf4j.LoggerFactory
+import sun.misc.Unsafe
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.declaredMemberProperties
@@ -32,7 +33,9 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
     }
 
     private fun load(bean: KClass<*>, args: Array<String>) {
-        val properties = bean.declaredMemberProperties.toList()
+        val properties =
+                bean.declaredMemberProperties.toList()
+
         val result = Array<Any?>(properties.size) { null }
         for ((index, property) in properties.withIndex()) {
             if (property.findAnnotation<Ignore>() != null) {
@@ -64,17 +67,20 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
                 throw NullPointerException("无法初始化类型，因为字段${property.name} 为空，但此字段不允许空的数据！")
             }
         }
-        if (bean.isData) {
-            map[bean.jvmName] =
-                    bean.javaObjectType.declaredConstructors[0].newInstance(*result)
+        val any = if (bean.isData) {
+            val field = Unsafe::class.java.getDeclaredField("theUnsafe")
+            field.isAccessible = true
+            val unsafe = field.get(null) as Unsafe
+            unsafe.allocateInstance(bean.javaObjectType)
         } else {
-            val any = bean.createInstance()
-            for ((index, property) in properties.withIndex()) {
-                property.isAccessible = true
-                property.javaField!!.set(any, result[index])
-            }
-            map[bean.jvmName] = any
+            bean.createInstance()
         }
+        for ((index, property) in properties.withIndex()) {
+            property.isAccessible = true
+            property.javaField!!.set(any, result[index])
+        }
+        map[bean.jvmName] = any
+
     }
 
     /**
