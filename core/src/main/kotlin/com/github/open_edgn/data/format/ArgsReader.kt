@@ -132,21 +132,24 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
 
     private fun loadItem(args: Array<String>, alias: String, type: KClass<*>): Any? {
         val argsLength = args.size
-        for ((index, value) in args.withIndex()) {
+        loop1@ for ((index, value) in args.withIndex()) {
             if (value == alias) {
-                return if (index >= argsLength) {
-                    if (type.javaObjectType == Boolean::class.javaObjectType) {
-                        true
-                    } else {
-                        break
-                        // 返回指定字段的默认数值
+                when {
+                    index >= argsLength -> {
+                        if (type.javaObjectType == Boolean::class.javaObjectType) {
+                            return true
+                        } else {
+                            break@loop1
+                            // 返回指定字段的默认数值
+                        }
                     }
-                } else {
-                    val nextItem = args[index + 1]
-                    if (type.javaObjectType == Boolean::class.javaObjectType) {
-                        nextItem.toUpperCase().trim() != "FALSE"
-                    } else {
-                        StringFormatUtils.parse(nextItem, type, true)
+                    else -> {
+                        val nextItem = args[index + 1]
+                        return if (type.javaObjectType == Boolean::class.javaObjectType) {
+                            nextItem.toUpperCase().trim() != "FALSE"
+                        } else {
+                            StringFormatUtils.parse(nextItem, type, true)
+                        }
                     }
                 }
             }
