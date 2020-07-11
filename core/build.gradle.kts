@@ -6,7 +6,6 @@ plugins {
 }
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
-
 dependencies {
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib"))
