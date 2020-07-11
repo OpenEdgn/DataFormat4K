@@ -1,8 +1,6 @@
-package com.github.open_edgn.data.format.utils
+package com.github.open_edgn.data.format
 
-import kotlin.reflect.KClass
-
-interface IObjectFormat <T:Any>{
+interface IObjectFormat<T : Any> {
     /**
      * 注册可解析的类
      */
@@ -14,7 +12,7 @@ interface IObjectFormat <T:Any>{
      * @param data String 原始字符串
      * @return T 需要的类型
      */
-    fun parse(data: String):T
+    fun parse(data: String): T
 
     /**
      * 将原始数据解析成对应的字符串
@@ -22,5 +20,5 @@ interface IObjectFormat <T:Any>{
      * @param data Any  原始数据
      * @return String 对应的字符串
      */
-    fun format(data: Any):String
+    fun format(data: Any): String
 }

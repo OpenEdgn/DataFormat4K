@@ -1,8 +1,7 @@
-package com.github.open_edgn.data.format.io
-
-import org.junit.jupiter.api.Test
+package com.github.open_edgn.data.format
 
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 internal class HashDataPropertiesTest {
     private fun getEmptyHashDataProperties(): HashDataProperties {
@@ -203,7 +202,4 @@ internal class HashDataPropertiesTest {
         assertFalse(prop.replace("long4",2121L))
         assertEquals(prop.getLong("long3"),2343L)
     }
-
-
-
 }

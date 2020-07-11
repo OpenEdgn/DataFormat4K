@@ -1,9 +1,7 @@
-package com.github.open_edgn.data.format.utils
+package com.github.open_edgn.data.format
 
-import com.github.open_edgn.data.format.FormatErrorException
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import java.util.*
 
 internal class StringFormatUtilsTest {

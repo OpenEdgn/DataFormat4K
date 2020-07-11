@@ -1,16 +1,14 @@
-package com.github.open_edgn.data.format.utils
+package com.github.open_edgn.data.format
 
-import com.github.open_edgn.data.format.ArgsItem
-import com.github.open_edgn.data.format.Beta
-import com.github.open_edgn.data.format.FormatErrorException
-import com.github.open_edgn.data.format.Ignore
 import org.slf4j.LoggerFactory
-import java.lang.RuntimeException
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.jvm.*
+import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.javaField
+import kotlin.reflect.jvm.jvmErasure
+import kotlin.reflect.jvm.jvmName
 
 /**
  * 解析 main 方法下的 Args 方案

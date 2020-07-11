@@ -1,7 +1,5 @@
-package com.github.open_edgn.data.format.io
+package com.github.open_edgn.data.format
 
-import com.github.open_edgn.data.format.utils.StringFillUtils
-import com.github.open_edgn.data.format.utils.StringFormatUtils
 import java.io.Reader
 import java.io.Writer
 import java.util.*
@@ -25,6 +23,11 @@ class HashDataProperties(private val formatString: Boolean = true) : BaseDataPro
     override fun hashCode(): Int {
         return container.hashCode()
     }
+
+    override val keys: Set<String>
+        get() = container.keys.toSet()
+
+    override fun get(key: String): Any? = container[key]
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

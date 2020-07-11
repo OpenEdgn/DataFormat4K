@@ -1,11 +1,5 @@
 package com.github.open_edgn.data.format
 
-import com.github.open_edgn.data.format.io.HashDataProperties
-import com.github.open_edgn.data.format.io.IDataProperties
-import com.github.open_edgn.data.format.utils.ObjectUtils
-import com.github.open_edgn.data.format.utils.StringFillUtils
-import com.github.open_edgn.data.format.utils.StringFormatUtils
-import com.github.open_edgn.data.format.utils.StringUtils
 import java.io.InputStream
 import java.io.Reader
 import java.nio.charset.Charset

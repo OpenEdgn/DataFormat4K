@@ -1,4 +1,4 @@
-package com.github.open_edgn.data.format.utils
+package com.github.open_edgn.data.format
 
 import java.util.regex.Pattern
 

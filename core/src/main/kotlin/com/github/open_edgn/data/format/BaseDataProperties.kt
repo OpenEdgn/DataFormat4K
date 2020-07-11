@@ -1,4 +1,4 @@
-package com.github.open_edgn.data.format.io
+package com.github.open_edgn.data.format
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -43,47 +43,47 @@ abstract class BaseDataProperties : IDataProperties {
     }
 
     override fun putByte(key: String, value: Byte): IDataProperties {
-        set(key,value)
+        set(key, value)
         return this
     }
 
     override fun putInt(key: String, value: Int): IDataProperties {
-        set(key,value)
+        set(key, value)
         return this
     }
 
     override fun putFloat(key: String, value: Float): IDataProperties {
-        set(key,value)
+        set(key, value)
         return this
     }
 
     override fun putLong(key: String, value: Long): IDataProperties {
-        set(key,value)
+        set(key, value)
         return this
     }
 
     override fun putShort(key: String, value: Short): IDataProperties {
-        set(key,value)
+        set(key, value)
         return this
     }
 
     override fun putDouble(key: String, value: Double): IDataProperties {
-        set(key,value)
+        set(key, value)
         return this
     }
 
     override fun putBoolean(key: String, value: Boolean): IDataProperties {
-        set(key,value)
+        set(key, value)
         return this
     }
 
     override fun putChar(key: String, value: Char): IDataProperties {
-        set(key,value)
+        set(key, value)
         return this
     }
 
     override fun putString(key: String, value: String): IDataProperties {
-        set(key,value)
+        set(key, value)
         return this
     }
 }

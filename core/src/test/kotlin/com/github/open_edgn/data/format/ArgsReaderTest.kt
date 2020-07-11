@@ -1,6 +1,5 @@
-package com.github.open_edgn.data.format.utils
+package com.github.open_edgn.data.format
 
-import com.github.open_edgn.data.format.ArgsItem
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -34,7 +33,7 @@ internal class ArgsReaderTest {
     @Test
     fun testSecond() {
         val test2 = ArgsReader(
-                arrayOf("--work-dir","data/app", "-d", "--skip-args"),
+                arrayOf("--work-dir", "data/app", "-d", "--skip-args"),
                 Test2::class
 
         ).getArgsBean(Test2::class)

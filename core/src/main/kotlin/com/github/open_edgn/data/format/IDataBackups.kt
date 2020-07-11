@@ -1,4 +1,4 @@
-package com.github.open_edgn.data.format.io
+package com.github.open_edgn.data.format
 
 import java.io.Reader
 import java.io.Writer

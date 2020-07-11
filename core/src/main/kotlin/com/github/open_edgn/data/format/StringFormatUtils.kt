@@ -1,7 +1,5 @@
-package com.github.open_edgn.data.format.utils
+package com.github.open_edgn.data.format
 
-import com.github.open_edgn.data.format.FormatErrorException
-import com.github.open_edgn.data.format.NotFoundException
 import kotlin.reflect.KClass
 
 
@@ -49,8 +47,8 @@ object StringFormatUtils {
     /**
      * 扩展方法，具体查看 `#parse(String,Class)`
      */
-    fun <T : Any> parse(source: String, clazz: KClass<T>,fillSystemProp:Boolean = false): T {
-        return parse(source, clazz.javaObjectType,fillSystemProp)
+    fun <T : Any> parse(source: String, clazz: KClass<T>, fillSystemProp: Boolean = false): T {
+        return parse(source, clazz.javaObjectType, fillSystemProp)
     }
 
     /**
@@ -64,10 +62,10 @@ object StringFormatUtils {
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(FormatErrorException::class, NotFoundException::class)
-    fun <T : Any> parse(source: String, clazz: Class<T>, fillSystemProp:Boolean = false): T {
-        val sourceData = if (fillSystemProp){
+    fun <T : Any> parse(source: String, clazz: Class<T>, fillSystemProp: Boolean = false): T {
+        val sourceData = if (fillSystemProp) {
             StringFillUtils.fillFromSystemProp(source)
-        }else{
+        } else {
             source
         }
         var parse = formatMap[clazz]
@@ -96,6 +94,7 @@ object StringFormatUtils {
     fun <T : Any> format(source: T, clazz: KClass<out T>): String {
         return format(source, clazz.javaObjectType)
     }
+
     /**
      *  扩展方法，具体查看 `#format(T,Class)`
      */

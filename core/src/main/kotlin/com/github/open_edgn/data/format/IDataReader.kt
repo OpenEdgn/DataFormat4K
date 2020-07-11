@@ -1,8 +1,8 @@
-package com.github.open_edgn.data.format.io
+package com.github.open_edgn.data.format
 
 import java.io.Serializable
 
-interface IDataReader: Serializable {
+interface IDataReader : Serializable {
     /**
      * 根据键值获取 Byte 类型的数据
      *

@@ -1,6 +1,5 @@
-package com.github.open_edgn.data.format.utils
+package com.github.open_edgn.data.format
 
-import com.github.open_edgn.data.format.FormatErrorException
 import java.io.File
 
 class ByteObjectFormat : IObjectFormat<Byte> {
@@ -134,7 +133,8 @@ class FileObjectFormat : IObjectFormat<File> {
 
     override fun format(data: Any): String {
         if (data is File) {
-            return data.absolutePath
+            // 替换掉 Windows 下的反斜杠
+            return data.absolutePath.replace("\\", "/")
         } else {
             throw FormatErrorException("data#${data::class.java.simpleName} 不是 File 类型.")
         }

@@ -1,4 +1,4 @@
-package com.github.open_edgn.data.format.utils
+package com.github.open_edgn.data.format
 
 import java.io.*
 import java.nio.charset.Charset
@@ -35,7 +35,9 @@ object StringUtils {
      * @return String 读取到的全部字符串
      */
     fun readText(reader: Reader): String {
-        return reader.readText()
+        val stringWriter = StringWriter()
+        reader.copyTo(stringWriter)
+        return stringWriter.toString()
     }
 
 
