@@ -6,7 +6,9 @@ buildscript {
 
 
     repositories {
-        maven { url = uri("https://maven.aliyun.com/repository/public/") }
+        mavenLocal()
+        mavenCentral()
+//        maven { url = uri("https://maven.aliyun.com/repository/public/") }
         jcenter()
         maven { url = uri("https://jitpack.io") }
 
@@ -18,9 +20,11 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url = uri("https://maven.aliyun.com/repository/public/") }
+        mavenLocal()
+        mavenCentral()
+//        maven { url = uri("https://maven.aliyun.com/repository/public/") }
         jcenter()
-        maven { url = uri( "https://jitpack.io") }
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
