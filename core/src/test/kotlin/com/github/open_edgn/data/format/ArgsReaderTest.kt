@@ -69,4 +69,25 @@ internal class ArgsReaderTest {
             @ArgsItem(defaultValue = "false", alias = ["debug", "d"])
             val debug: Boolean
     )
+
+    @Test
+    fun test4() {
+        val argsBean = ArgsReader(
+                arrayOf("-d"),
+                Test4Property::class).getArgsBean(Test4Property::class)
+        assertEquals(argsBean.workDirectory, null)
+    }
+
+    data class Test4Property(
+            /**
+             * 工作目录
+             */
+            @ArgsItem(defaultValue = "", nullable = true, alias = ["work-dir"])
+            var workDirectory: File?,
+            /**
+             * 开启debug 模式
+             */
+            @ArgsItem(defaultValue = "false", alias = ["debug", "d"])
+            val debug: Boolean
+    )
 }

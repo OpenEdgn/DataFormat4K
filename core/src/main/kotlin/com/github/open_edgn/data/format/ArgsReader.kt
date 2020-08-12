@@ -43,6 +43,7 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
                 continue
             }
             val argsItem = property.findAnnotation<ArgsItem>()
+            val canNullable = property.returnType.isMarkedNullable
             try {
                 if (argsItem != null) {
                     val alias = argsItem.alias.toMutableList()
@@ -50,20 +51,22 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
                         alias.add(property.name)
                     }
                     if (argsItem.defaultValue.isNotEmpty()) {
-
-                        logger.debug("字段 {} 指定默认值为 {},在不存在可注入的数据时将使用此默认值.", property.name, argsItem.defaultValue)
+                        logger.debug("字段 {} 指定未找到时的默认值为 {}.", property.name, argsItem.defaultValue)
                     } else {
-                        logger.debug("字段 {} 不存在默认值.", property.name)
+                        logger.debug("字段 {} 不存在默认值." +
+                                if (canNullable && argsItem.nullable)
+                                    "且字段允许为null,如未找到匹配的数据则默认为 null"
+                                else "但字段不允许为null,如果未找到匹配的数据，程序将抛出异常!", property.name)
                     }
-                    injection(result, index, property.returnType.jvmErasure, args, alias, argsItem.defaultValue)
+                    injection(result, index, property.returnType.jvmErasure, args, alias, argsItem.defaultValue, canNullable && argsItem.nullable)
                 } else {
                     logger.debug("字段 {} 不存在默认值.", property.name)
-                    injection(result, index, property.returnType.jvmErasure, args, listOf(property.name), null)
+                    injection(result, index, property.returnType.jvmErasure, args, listOf(property.name), null, canNullable)
                 }
             } catch (e: Exception) {
                 throw FormatErrorException("解析 Arg 时出现错误！[${e.message}]", e)
             }
-            if (property.returnType.isMarkedNullable.not() && result[index] == null) {
+            if (canNullable.not() && result[index] == null) {
                 throw NullPointerException("无法初始化类型，因为字段${property.name} 为空，但此字段不允许空的数据！")
             }
         }
@@ -104,7 +107,8 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
                           type: KClass<*>,
                           args: Array<String>,
                           alias: List<String>,
-                          defaultValue: String?) {
+                          defaultValue: String?,
+                          canNullable: Boolean) {
         for (item in alias) {
             val data = when {
                 item.length == 1 -> {
@@ -123,10 +127,12 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
             }
         }
 
-        if (defaultValue == null || defaultValue.isEmpty()) {
-            throw FormatErrorException("未发现 Args 下存在可注入的数据且默认值.")
-        } else {
+        if (defaultValue != null && defaultValue.isNotEmpty()) {
             result[index] = StringFormatUtils.parse(defaultValue, type, true)
+        } else {
+            if (!canNullable) {
+                throw FormatErrorException("未发现 Args 下存在可注入的数据且默认值.")
+            }
         }
     }
 

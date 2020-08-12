@@ -7,6 +7,7 @@ package com.github.open_edgn.data.format
  * 此字段可以忽略，同样会扫描，但会按照默认样式来绑定
  *
  * @property defaultValue String 默认值
+ * @param nullable Boolean 指定此字段是否可以为 null
  * @property alias Array<out String>
  * @constructor
  */
@@ -14,6 +15,7 @@ package com.github.open_edgn.data.format
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
 annotation class ArgsItem(
         val defaultValue: String = "",
+        val nullable: Boolean = true,
         vararg val alias: String
 )
 
