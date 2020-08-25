@@ -186,7 +186,11 @@ class HashDataProperties(private val formatString: Boolean = true) : BaseDataPro
 
     override fun <T> set(key: String, value: T): Boolean {
         return writeLock.lock {
-            logger.debug("添加数据(K=\'{}\',V=\'{}\');", key, value)
+            InternalLogger.printLogger(
+                    javaClass,
+                    InternalLogger.Type.DEBUG,
+                    "添加数据(K=\'${key}\',V=\'${value}\');"
+            )
             container[key] = StringFormatUtils.format(value as Any)
             true
         }

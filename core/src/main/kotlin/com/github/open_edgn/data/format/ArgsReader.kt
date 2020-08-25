@@ -1,6 +1,5 @@
 package com.github.open_edgn.data.format
 
-import org.slf4j.LoggerFactory
 import sun.misc.Unsafe
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -21,7 +20,6 @@ import kotlin.reflect.jvm.jvmName
 @Beta
 class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
     private val map = HashMap<String, Any>()
-    private val logger = LoggerFactory.getLogger(javaClass)
 
     init {
         for (bean in argsBeans) {
@@ -39,7 +37,7 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
         val result = Array<Any?>(properties.size) { null }
         for ((index, property) in properties.withIndex()) {
             if (property.findAnnotation<Ignore>() != null) {
-                logger.debug("忽略字段 {}.", property.name)
+                InternalLogger.printLogger(javaClass, InternalLogger.Type.DEBUG, "忽略字段 ${property.name}.")
                 continue
             }
             val argsItem = property.findAnnotation<ArgsItem>()
@@ -51,16 +49,23 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
                         alias.add(property.name)
                     }
                     if (argsItem.defaultValue.isNotEmpty()) {
-                        logger.debug("字段 {} 指定未找到时的默认值为 {}.", property.name, argsItem.defaultValue)
+                        InternalLogger.printLogger(javaClass,
+                                InternalLogger.Type.DEBUG,
+                                "字段 ${property.name} 指定未找到时的默认值为 ${argsItem.defaultValue}.")
+
                     } else {
-                        logger.debug("字段 {} 不存在默认值." +
+                        InternalLogger.printLogger(javaClass,
+                                InternalLogger.Type.DEBUG, "字段 ${property.name} 不存在默认值." +
                                 if (canNullable && argsItem.nullable)
                                     "且字段允许为null,如未找到匹配的数据则默认为 null"
-                                else "但字段不允许为null,如果未找到匹配的数据，程序将抛出异常!", property.name)
+                                else "但字段不允许为null,如果未找到匹配的数据，程序将抛出异常!"
+                        )
+
                     }
                     injection(result, index, property.returnType.jvmErasure, args, alias, argsItem.defaultValue, canNullable && argsItem.nullable)
                 } else {
-                    logger.debug("字段 {} 不存在默认值.", property.name)
+                    InternalLogger.printLogger(javaClass,
+                            InternalLogger.Type.DEBUG, "字段 ${property.name} 不存在默认值.")
                     injection(result, index, property.returnType.jvmErasure, args, listOf(property.name), null, canNullable)
                 }
             } catch (e: Exception) {
