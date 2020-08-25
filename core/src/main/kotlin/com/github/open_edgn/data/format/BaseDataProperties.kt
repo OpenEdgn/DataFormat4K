@@ -1,11 +1,8 @@
 package com.github.open_edgn.data.format
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 
 abstract class BaseDataProperties : IDataProperties {
-    protected val logger: Logger = LoggerFactory.getLogger(javaClass)
     override fun getByteOrDefault(key: String, defaultValue: Byte): Byte {
         return getByte(key) ?: defaultValue
     }

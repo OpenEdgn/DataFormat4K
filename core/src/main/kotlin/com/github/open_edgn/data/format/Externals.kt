@@ -115,7 +115,9 @@ fun Reader.readText(): String {
  * @receiver Throwable 异常
  * @return String 全部信息
  */
+@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 fun Throwable.readPrintText(): String {
     return StringUtils.throwableFormat(this)
 }
 //############# StringUtils #################
+

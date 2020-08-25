@@ -61,12 +61,9 @@ object StringUtils {
         return d.isBlank()
     }
 
-    /**
-     * 对抛出的异常信息全部捕获
-     * @param throws Throwable 异常信息
-     * @return String 捕获的日志
-     */
-    fun throwableFormat(throws: Throwable): String {
+
+    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    internal fun privateThrowableFormat(throws: java.lang.Throwable): String {
         val outputStream = ByteArrayOutputStream()
         val printWriter = PrintWriter(OutputStreamWriter(outputStream, Charsets.UTF_8), true)
         throws.printStackTrace(printWriter)
@@ -76,4 +73,12 @@ object StringUtils {
         outputStream.close()
         return array.toString(Charsets.UTF_8).trim()
     }
+
+    /**
+     * 对抛出的异常信息全部捕获
+     * @param throws Throwable 异常信息
+     * @return String 捕获的日志
+     */
+    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    fun throwableFormat(throws: Throwable) = privateThrowableFormat(throws as java.lang.Throwable)
 }
