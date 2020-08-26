@@ -75,13 +75,19 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
                 throw NullPointerException("无法初始化类型，因为字段${property.name} 为空，但此字段不允许空的数据！")
             }
         }
-        val any = if (bean.isData) {
-            val field = Unsafe::class.java.getDeclaredField("theUnsafe")
-            field.isAccessible = true
-            val unsafe = field.get(null) as Unsafe
-            unsafe.allocateInstance(bean.javaObjectType)
-        } else {
-            bean.createInstance()
+        val any = when {
+            bean.isData -> {
+                val field = Unsafe::class.java.getDeclaredField("theUnsafe")
+                field.isAccessible = true
+                val unsafe = field.get(null) as Unsafe
+                unsafe.allocateInstance(bean.javaObjectType)
+            }
+            bean.objectInstance != null -> {
+                bean.objectInstance!!
+            }
+            else -> {
+                bean.createInstance()
+            }
         }
         for ((index, property) in properties.withIndex()) {
             property.isAccessible = true
