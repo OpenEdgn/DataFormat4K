@@ -1,10 +1,16 @@
 package com.github.open_edgn.data.format
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
 internal class ArgsReaderTest {
+    @BeforeEach
+    fun before() {
+        System.setProperty("dataFormat4K.debug", "true")
+    }
+
     @Test
     fun test() {
         val argsReader = ArgsReader(arrayOf("--config", "%{user.home}"), ArgsLoader::class, Data::class)
@@ -90,4 +96,23 @@ internal class ArgsReaderTest {
             @ArgsItem(defaultValue = "false", alias = ["debug", "d"])
             val debug: Boolean
     )
+
+    @Test
+    fun test5() {
+        val argsBean = ArgsReader(
+                arrayOf("-d"),
+                Test5Property::class).getArgsBean(Test5Property::class)
+        assertEquals(argsBean.workDirectory, null)
+    }
+
+    object Test5Property {
+        /**
+         * 工作目录
+         */
+        @ArgsItem(defaultValue = "", nullable = true, alias = ["work-dir"])
+        var workDirectory: File? = null
+
+    }
+
+
 }

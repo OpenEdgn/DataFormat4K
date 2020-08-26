@@ -18,7 +18,7 @@ internal object InternalLogger {
      * 判断是否开启DEBUG
      */
     private val isDebug: Boolean by lazy {
-        System.getProperty("DateFormat4K.debug", "FALSE").toUpperCase() == "TRUE"
+        System.getProperty("dataFormat4K.debug", "FALSE").toUpperCase() == "TRUE"
     }
     private val dateFormat = SimpleDateFormat("MM/dd HH:mm:ss")
     fun printLogger(clazz: Class<*>, type: Type, message: String, e: Throwable? = null) {
@@ -27,7 +27,7 @@ internal object InternalLogger {
                 System.out.printf("[%s][%s] - %s:[%s]\r\n[%s]\r\n", dateFormat.format(System.currentTimeMillis()),
                         type.name, clazz.simpleName, message, e.readPrintText())
             } else {
-                System.out.printf("[%s][%s] - %s:[%s]\r\n[%s]\r\n", dateFormat.format(System.currentTimeMillis()),
+                System.out.printf("[%s][%s] - %s:[%s]\r\n", dateFormat.format(System.currentTimeMillis()),
                         type.name, clazz.simpleName, message)
             }
         }
