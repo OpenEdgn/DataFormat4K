@@ -29,12 +29,3 @@ annotation class ArgsItem(
         AnnotationTarget.PROPERTY,
         AnnotationTarget.FIELD)
 annotation class Ignore()
-
-/**
- * 标记此方法为 BETA 方法，后期可能会更改
- *
- * 更改会在发行日志下注明
- */
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-annotation class Beta()

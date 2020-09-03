@@ -6,6 +6,13 @@ plugins {
 }
 java.sourceCompatibility = JavaVersion.VERSION_11
 
+
+val compileKotlin: KotlinCompile by tasks
+val compileJava: JavaCompile by tasks
+compileJava.destinationDir = compileKotlin.destinationDir
+
+
+
 dependencies {
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib"))

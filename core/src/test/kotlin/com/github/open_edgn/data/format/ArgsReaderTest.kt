@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.github.open_edgn.data.format
 
 import org.junit.jupiter.api.Assertions.assertEquals
