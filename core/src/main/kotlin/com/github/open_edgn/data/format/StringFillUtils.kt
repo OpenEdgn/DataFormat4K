@@ -33,7 +33,7 @@ object StringFillUtils {
             val key = data.split(spit)[1]
             if (keySkipItem.contains(key)) {
                 continue
-                //出现相同字段，自动剔除，防止无线循环
+                //出现相同字段，自动剔除，防止无限循环
             }
             val propData = fillItems[key]
             if (propData != null)

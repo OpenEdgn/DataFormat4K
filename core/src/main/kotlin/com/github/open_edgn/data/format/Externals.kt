@@ -65,6 +65,16 @@ fun String.fillSystemProperties(): String {
 fun Any?.isNull(): Boolean {
     return ObjectUtils.isNull(this)
 }
+
+/**
+ * 创建对象
+ *
+ * @receiver KClass<T>
+ * @param unsafeMode Boolean
+ * @return T
+ */
+inline fun <reified T> KClass<*>.newInstance(unsafeMode: Boolean) =
+        ObjectUtils.createNewObject<T>(this, unsafeMode)
 //############# ObjectUtils #################
 //############# StringUtils #################
 /**

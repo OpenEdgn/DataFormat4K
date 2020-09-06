@@ -1,8 +1,6 @@
 package com.github.open_edgn.data.format
 
-import sun.misc.Unsafe
 import kotlin.reflect.KClass
-import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.isAccessible
@@ -15,16 +13,17 @@ import kotlin.reflect.jvm.jvmName
  *
  * @param args Array<String> 代表Main 方法传入的启动附加参数
  * @param argsBeans  Array<KClass> 代表被注入的容器
- *
+ * @Deprecated("此方法已经过时，请查看 `Args2Reader.kt`")
+ * @see Args2Reader
  */
-@Beta
-class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
+@Deprecated("此方法已经过时，请查看Args2Reader.kt")
+class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) : BaseArgsLoader() {
     private val map = HashMap<String, Any>()
 
     init {
         for (bean in argsBeans) {
             if (bean.java.isInterface) {
-                throw RuntimeException("无法实例化接口")
+                throw RuntimeException("无法实例化 ${bean.simpleName},因为这是一个接口")
             }
             load(bean, args)
         }
@@ -75,20 +74,7 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
                 throw NullPointerException("无法初始化类型，因为字段${property.name} 为空，但此字段不允许空的数据！")
             }
         }
-        val any = when {
-            bean.isData -> {
-                val field = Unsafe::class.java.getDeclaredField("theUnsafe")
-                field.isAccessible = true
-                val unsafe = field.get(null) as Unsafe
-                unsafe.allocateInstance(bean.javaObjectType)
-            }
-            bean.objectInstance != null -> {
-                bean.objectInstance!!
-            }
-            else -> {
-                bean.createInstance()
-            }
-        }
+        val any = bean.newInstance<Any>(true)
         for ((index, property) in properties.withIndex()) {
             property.isAccessible = true
             property.javaField!!.set(any, result[index])
@@ -104,7 +90,7 @@ class ArgsReader(args: Array<String>, vararg argsBeans: KClass<*>) {
      * @return T 实例化的对象
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getArgsBean(kClass: KClass<T>): T {
+    override fun <T : Any> getArgsBean(kClass: KClass<T>): T {
         val result = map[kClass.jvmName]
         if (result == null) {
             throw NullPointerException("未找到 ${kClass.jvmName} 的实例化对象.")
