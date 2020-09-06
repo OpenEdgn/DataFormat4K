@@ -1,5 +1,6 @@
 package com.github.open_edgn.data.format
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -10,15 +11,15 @@ internal class Args2ReaderTest {
     }
 
     data class TestDataA(
-            @ArgsItem("%{user.dir}", false, "A", "B")
+            @ArgsItem("c", false, "a", "B")
             val dataA: String,
             @Ignore
             val dataB: String
     )
 
     class TestDataB {
-        @ArgsItem("%{user.dir}", false, "a", "b")
-        lateinit var dataA: String
+        @ArgsItem("", true, "loader")
+        val dataA: String? = null
 
         @Ignore
         lateinit var dataB: String
@@ -29,5 +30,13 @@ internal class Args2ReaderTest {
     fun testA() {
         val args2Reader = Args2Reader(arrayOf("--a=c", "--a=b"), false)
         val argsBean = args2Reader.getArgsBean(TestDataA::class)
+        assertEquals(argsBean.dataA, "b")
+    }
+
+    @Test
+    fun testB() {
+        val args2Reader = Args2Reader(arrayOf("--loader=import", "--a=b"), false)
+        val argsBean = args2Reader.getArgsBean(TestDataB::class)
+        assertEquals(argsBean.dataA, "import")
     }
 }
