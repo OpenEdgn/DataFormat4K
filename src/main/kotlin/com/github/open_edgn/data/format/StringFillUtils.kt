@@ -4,7 +4,6 @@ import java.util.regex.Pattern
 
 /**
  * 字符串占位符替换方案
- *
  */
 object StringFillUtils {
     private val regex = Regex("%\\{.+?}")
@@ -43,6 +42,4 @@ object StringFillUtils {
         keySkipItem.clear()
         return container.toString()
     }
-
-
 }

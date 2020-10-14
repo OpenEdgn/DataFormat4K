@@ -21,10 +21,22 @@ tasks.test {
     }
 }
 
-
 repositories {
     mavenLocal()
     jcenter()
     mavenCentral()
     maven { url = project.uri("https://jitpack.io") }
+}
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = group.toString()
+            artifactId = project.name
+            version = rootProject.version.toString()
+            from(components["java"])
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
