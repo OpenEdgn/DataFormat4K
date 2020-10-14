@@ -1,20 +1,31 @@
 group = "com.github.openEDGN"
-version = Versions.Project.core
+version = "last"
+plugins {
+    kotlin("jvm") version "1.4.10"
+    `maven-publish`
+}
 
-buildscript {
-    Repository.loadMirrors(repositories, rootProject)
-    dependencies {
-        classpath("${kotlin("gradle-plugin")}:${Versions.Kotlin.gradlePlugin}")
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation(kotlin("reflect"))
+    implementation(kotlin("stdlib"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.6.2")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
     }
 }
 
-allprojects {
-    Repository.loadMirrors(repositories, rootProject)
-}
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
-    for (childProject in childProjects.values) {
-        delete(childProject.buildDir)
-    }
+repositories {
+    mavenLocal()
+    maven { url = project.uri("https://maven.aliyun.com/repository/public/") }
+    jcenter()
+    mavenCentral()
+    maven { url = project.uri("https://jitpack.io") }
 }
