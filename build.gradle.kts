@@ -24,7 +24,6 @@ tasks.test {
 
 repositories {
     mavenLocal()
-    maven { url = project.uri("https://maven.aliyun.com/repository/public/") }
     jcenter()
     mavenCentral()
     maven { url = project.uri("https://jitpack.io") }
