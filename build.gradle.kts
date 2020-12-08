@@ -1,11 +1,23 @@
-group = "com.github.openEDGN"
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+group = "com.github.OpenEdgn"
 version = "last"
 plugins {
     kotlin("jvm") version "1.4.10"
     `maven-publish`
 }
 
+java {
+    modularity.inferModulePath.set(true)
+}
+
+
 java.sourceCompatibility = JavaVersion.VERSION_11
+
+val compileKotlin: KotlinCompile by tasks
+val compileJava: JavaCompile by tasks
+compileJava.destinationDir = compileKotlin.destinationDir
+
 
 dependencies {
     implementation(kotlin("reflect"))
