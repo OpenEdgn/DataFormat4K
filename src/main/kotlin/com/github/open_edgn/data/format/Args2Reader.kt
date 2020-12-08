@@ -13,6 +13,7 @@ import kotlin.reflect.jvm.jvmErasure
  * @param allowJVMArgs 添加 JVM 参数
  * @param args 程序传参
  */
+@Deprecated("实用性不大，将在后期版本移除")
 class Args2Reader(args: Array<String>, allowJVMArgs: Boolean = false) : BaseArgsLoader() {
     private val data = HashMap<String, String>()
 

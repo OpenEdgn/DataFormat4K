@@ -36,7 +36,7 @@ object StringFormatUtils {
      *
      * @param formatArr Array<out IObjectFormat<*>> 解析方案
      */
-    fun include(vararg formatArr: IObjectFormat<*>) {
+    internal fun include(vararg formatArr: IObjectFormat<*>) {
         for (format in formatArr) {
             for (clazz in format.register) {
                 formatMap[clazz] = format

@@ -11,6 +11,7 @@ package com.github.open_edgn.data.format
  * @property alias Array<out String>
  * @constructor
  */
+@Deprecated("将在后期版本移除")
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
 annotation class ArgsItem(
@@ -22,10 +23,11 @@ annotation class ArgsItem(
 /**
  * 忽略字段，打上此字段后将忽略对此字段的一切事情
  */
+@Deprecated("将在后期版本移除")
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION,
         AnnotationTarget.CLASS,
         AnnotationTarget.FILE,
         AnnotationTarget.PROPERTY,
         AnnotationTarget.FIELD)
-annotation class Ignore()
+annotation class Ignore
